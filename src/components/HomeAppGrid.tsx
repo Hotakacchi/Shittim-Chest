@@ -93,8 +93,9 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
 
   // Seed initial placement for the current orientation once the container is
   // measured and any saved layout has been loaded: restore a saved cell per
-  // app for this orientation, or fall back to a centered row for apps that
-  // have never been placed in it before.
+  // app for this orientation, or drop apps that have never been placed in it
+  // before (e.g. newly added apps) into the next free cell — centered as a
+  // row when the grid starts out empty.
   useEffect(() => {
     if (containerSize.width === 0 || containerSize.height === 0) return;
     if (savedPositionsBySize === null) return;
@@ -102,15 +103,29 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
       const current = prev[orientation];
       const missing = apps.filter((a) => !current[a.key]);
       if (missing.length === 0) return prev;
+
+      const occupied = new Set(Object.values(current).map((c) => `${c.col},${c.row}`));
       const startCol = Math.max(0, Math.floor((columns - apps.length) / 2));
       const midRow = Math.floor(rows / 2);
+
+      function findFreeCell(preferred: Cell): Cell {
+        if (!occupied.has(`${preferred.col},${preferred.row}`)) return preferred;
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < columns; col++) {
+            if (!occupied.has(`${col},${row}`)) return { col, row };
+          }
+        }
+        return preferred;
+      }
+
       const nextForOrientation = { ...current };
       missing.forEach((app) => {
         const index = apps.indexOf(app);
         const saved = savedPositionsBySize[orientation][app.key];
-        nextForOrientation[app.key] = saved
-          ? clampCell(saved)
-          : clampCell({ col: startCol + index, row: midRow });
+        const preferred = saved ? clampCell(saved) : clampCell({ col: startCol + index, row: midRow });
+        const cell = findFreeCell(preferred);
+        occupied.add(`${cell.col},${cell.row}`);
+        nextForOrientation[app.key] = cell;
       });
       return { ...prev, [orientation]: nextForOrientation };
     });

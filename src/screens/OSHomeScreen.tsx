@@ -9,16 +9,27 @@ import { GradientTriangleBackground } from '../components/GradientTriangleBackgr
 import { SchaleBadge } from '../components/SchaleBadge';
 import { AppWindow } from '../components/AppWindow';
 import { HomeAppGrid, AppDef } from '../components/HomeAppGrid';
-import { ClockIcon, CalendarIcon, ChecklistIcon, GearIcon } from '../components/icons/AppIcons';
+import {
+  ClockIcon,
+  CalendarIcon,
+  ChecklistIcon,
+  GearIcon,
+  CameraIcon,
+  GalleryIcon,
+} from '../components/icons/AppIcons';
 import { ClockApp } from './apps/ClockApp';
 import { ScheduleApp } from './apps/ScheduleApp';
 import { TaskApp } from './apps/TaskApp';
 import { SystemApp } from './apps/SystemApp';
+import { CameraApp } from './apps/CameraApp';
+import { GalleryApp } from './apps/GalleryApp';
 
 const APP_DEFS: AppDef[] = [
   { key: 'CLOCK', label: 'CLOCK', Icon: ClockIcon },
   { key: 'SCHEDULE', label: 'SCHEDULE', Icon: CalendarIcon },
   { key: 'TASK', label: 'TASK', Icon: ChecklistIcon },
+  { key: 'CAMERA', label: 'CAMERA', Icon: CameraIcon },
+  { key: 'GALLERY', label: 'GALLERY', Icon: GalleryIcon },
   { key: 'SYSTEM', label: 'SYSTEM', Icon: GearIcon },
 ];
 
@@ -26,6 +37,8 @@ const APP_SCREENS: Record<string, React.ComponentType> = {
   CLOCK: ClockApp,
   SCHEDULE: ScheduleApp,
   TASK: TaskApp,
+  CAMERA: CameraApp,
+  GALLERY: GalleryApp,
   SYSTEM: SystemApp,
 };
 

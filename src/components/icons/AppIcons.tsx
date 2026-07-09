@@ -42,6 +42,25 @@ export function ChecklistIcon({ size = 28, color = colors.ink }: IconProps) {
   );
 }
 
+export function CameraIcon({ size = 28, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M9 5h6l1.2 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2.8L9 5Z" stroke={color} strokeWidth={1.8} strokeLinejoin="round" />
+      <Circle cx={12} cy={13} r={3.6} stroke={color} strokeWidth={1.8} />
+    </Svg>
+  );
+}
+
+export function GalleryIcon({ size = 28, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Rect x={3} y={4} width={18} height={16} rx={2} stroke={color} strokeWidth={1.8} />
+      <Circle cx={8.2} cy={9} r={1.6} fill={color} />
+      <Path d="M4 17.5l4.8-5.4 3.4 3.6 2.6-2.8 5.2 4.6" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
 const GEAR_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 export function GearIcon({ size = 28, color = colors.ink }: IconProps) {

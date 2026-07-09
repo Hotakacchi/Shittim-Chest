@@ -4,4 +4,5 @@ export const STORAGE_KEYS = {
   tasks: 'shittim.tasks.v1',
   iconPositions: 'shittim.home.iconPositions.v1',
   scheduleEvents: 'shittim.schedule.events.v1',
+  galleryPhotos: 'shittim.gallery.photos.v1',
 } as const;
