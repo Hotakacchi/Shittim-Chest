@@ -3,9 +3,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../theme/colors';
 import { GradientTriangleBackground } from '../components/GradientTriangleBackground';
-import { SystemHeader } from '../components/SystemHeader';
 import { ClockDisplay } from '../components/ClockDisplay';
-import { TabBar, TabKey } from '../components/TabBar';
+import { AppTile } from '../components/AppTile';
+import { AppWindow } from '../components/AppWindow';
+
+const APPS = ['SCHEDULE', 'TASK', 'SYSTEM'] as const;
+type AppKey = (typeof APPS)[number];
 
 function getGreeting(hour: number): string {
   if (hour >= 5 && hour < 11) return 'おはようございます、先生。';
@@ -14,35 +17,30 @@ function getGreeting(hour: number): string {
   return '夜遅くまでお疲れ様です……先生。';
 }
 
-function TabPlaceholder({ label }: { label: string }) {
-  return (
-    <View style={styles.placeholder}>
-      <Text style={styles.placeholderText}>{label}（準備中）</Text>
-    </View>
-  );
-}
-
 export function OSHomeScreen() {
-  const [activeTab, setActiveTab] = useState<TabKey>('SCHEDULE');
+  const [openApp, setOpenApp] = useState<AppKey | null>(null);
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       <GradientTriangleBackground />
-      <SystemHeader />
 
-      <View style={styles.body}>
-        {activeTab === 'SCHEDULE' && (
-          <View style={styles.schedulePanel}>
+      {openApp ? (
+        <AppWindow title={openApp} onClose={() => setOpenApp(null)} />
+      ) : (
+        <View style={styles.home}>
+          <View style={styles.clockArea}>
             <ClockDisplay />
             <Text style={styles.greeting}>{getGreeting(new Date().getHours())}</Text>
           </View>
-        )}
-        {activeTab === 'TASK' && <TabPlaceholder label="TASK" />}
-        {activeTab === 'SYSTEM' && <TabPlaceholder label="SYSTEM" />}
-      </View>
 
-      <TabBar active={activeTab} onChange={setActiveTab} />
+          <View style={styles.dock}>
+            {APPS.map((app) => (
+              <AppTile key={app} label={app} onPress={() => setOpenApp(app)} />
+            ))}
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -52,13 +50,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.gradientTop,
   },
-  body: {
+  home: {
     flex: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
+    paddingTop: 96,
+    paddingBottom: 64,
   },
-  schedulePanel: {
+  clockArea: {
     alignItems: 'center',
     gap: 12,
   },
@@ -67,17 +66,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 1,
   },
-  placeholder: {
-    borderWidth: 1,
-    borderColor: colors.panelBorderOnLight,
-    borderRadius: 8,
-    paddingHorizontal: 32,
-    paddingVertical: 24,
-    backgroundColor: colors.panelOnLight,
-  },
-  placeholderText: {
-    color: colors.inkDim,
-    fontSize: 14,
-    letterSpacing: 2,
+  dock: {
+    flexDirection: 'row',
+    gap: 20,
   },
 });
