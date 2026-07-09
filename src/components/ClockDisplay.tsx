@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 64,
     fontWeight: '300',
-    color: colors.text,
+    color: colors.ink,
     letterSpacing: 4,
   },
   date: {
     marginTop: 4,
     fontSize: 16,
-    color: colors.textDim,
+    color: colors.inkDim,
     letterSpacing: 2,
   },
 });

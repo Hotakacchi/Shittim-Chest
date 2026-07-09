@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: colors.panelBorder,
+    borderBottomColor: colors.panelBorderOnLight,
   },
   side: {
     flexDirection: 'row',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   title: {
-    color: colors.text,
+    color: colors.ink,
     fontSize: 14,
     letterSpacing: 4,
   },

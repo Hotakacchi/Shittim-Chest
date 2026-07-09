@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderTopColor: colors.panelBorder,
+    borderTopColor: colors.panelBorderOnLight,
   },
   tab: {
     flex: 1,
@@ -42,15 +42,15 @@ const styles = StyleSheet.create({
     borderTopColor: 'transparent',
   },
   tabActive: {
-    borderTopColor: colors.accentBright,
-    backgroundColor: colors.panel,
+    borderTopColor: colors.accent,
+    backgroundColor: colors.panelOnLight,
   },
   label: {
-    color: colors.textDim,
+    color: colors.inkDim,
     fontSize: 13,
     letterSpacing: 2,
   },
   labelActive: {
-    color: colors.accentBright,
+    color: colors.ink,
   },
 });

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../theme/colors';
+import { GradientTriangleBackground } from '../components/GradientTriangleBackground';
 import { SystemHeader } from '../components/SystemHeader';
 import { ClockDisplay } from '../components/ClockDisplay';
 import { TabBar, TabKey } from '../components/TabBar';
@@ -26,7 +27,8 @@ export function OSHomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
+      <GradientTriangleBackground />
       <SystemHeader />
 
       <View style={styles.body}>
@@ -48,7 +50,7 @@ export function OSHomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.gradientTop,
   },
   body: {
     flex: 1,
@@ -61,20 +63,20 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   greeting: {
-    color: colors.textDim,
+    color: colors.inkDim,
     fontSize: 16,
     letterSpacing: 1,
   },
   placeholder: {
     borderWidth: 1,
-    borderColor: colors.panelBorder,
+    borderColor: colors.panelBorderOnLight,
     borderRadius: 8,
     paddingHorizontal: 32,
     paddingVertical: 24,
-    backgroundColor: colors.panel,
+    backgroundColor: colors.panelOnLight,
   },
   placeholderText: {
-    color: colors.textDim,
+    color: colors.inkDim,
     fontSize: 14,
     letterSpacing: 2,
   },
