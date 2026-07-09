@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Svg, {
   Defs,
   LinearGradient,
@@ -15,11 +15,10 @@ const TILE_W = 70;
 const TILE_H = 61;
 const SCROLL_DURATION_MS = 9000;
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
-const LAYER_W = SCREEN_W + TILE_W * 2;
-const LAYER_H = SCREEN_H + TILE_H * 2;
-
 export function GradientTriangleBackground() {
+  const { width: screenW, height: screenH } = useWindowDimensions();
+  const layerW = screenW + TILE_W * 2;
+  const layerH = screenH + TILE_H * 2;
   const scroll = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -56,12 +55,12 @@ export function GradientTriangleBackground() {
             position: 'absolute',
             left: -TILE_W,
             top: -TILE_H,
-            width: LAYER_W,
-            height: LAYER_H,
+            width: layerW,
+            height: layerH,
             transform: [{ translateX }, { translateY }],
           }}
         >
-          <Svg width={LAYER_W} height={LAYER_H}>
+          <Svg width={layerW} height={layerH}>
             <Defs>
               <Pattern
                 id="bg-triangles"
