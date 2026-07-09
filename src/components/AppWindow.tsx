@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   placeholder: {
     color: colors.inkDim,
     fontSize: 14,
     letterSpacing: 2,
+    textAlign: 'center',
+    marginTop: 48,
   },
 });

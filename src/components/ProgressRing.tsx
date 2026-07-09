@@ -1,5 +1,5 @@
 import { Animated } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, G } from 'react-native-svg';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -29,20 +29,19 @@ export function ProgressRing({ progress }: Props) {
         strokeWidth={STROKE}
         fill="none"
       />
-      <AnimatedCircle
-        cx={SIZE / 2}
-        cy={SIZE / 2}
-        r={RADIUS}
-        stroke="#ffffff"
-        strokeWidth={STROKE}
-        fill="none"
-        strokeLinecap="round"
-        strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
-        strokeDashoffset={strokeDashoffset}
-        rotation="-90"
-        originX={SIZE / 2}
-        originY={SIZE / 2}
-      />
+      <G rotation="-90" origin={`${SIZE / 2}, ${SIZE / 2}`}>
+        <AnimatedCircle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          stroke="#ffffff"
+          strokeWidth={STROKE}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
+          strokeDashoffset={strokeDashoffset}
+        />
+      </G>
     </Svg>
   );
 }
