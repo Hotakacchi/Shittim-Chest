@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   time: {
-    fontSize: 64,
+    fontSize: 128,
     fontWeight: '300',
     color: colors.ink,
     letterSpacing: 4,
   },
   date: {
-    marginTop: 4,
-    fontSize: 16,
+    marginTop: 8,
+    fontSize: 20,
     color: colors.inkDim,
     letterSpacing: 2,
   },
