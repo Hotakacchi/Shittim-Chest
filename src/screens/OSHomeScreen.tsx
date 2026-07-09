@@ -40,8 +40,12 @@ export function OSHomeScreen() {
         <AppWindow title={openApp} onClose={() => setOpenApp(null)} />
       ) : (
         <View style={styles.home}>
-          <SchaleBadge />
-          <HomeAppGrid apps={APP_DEFS} onLaunch={setOpenApp} />
+          <View style={styles.centerLayer} pointerEvents="none">
+            <SchaleBadge />
+          </View>
+          <View style={[styles.centerLayer, styles.gridLayer]}>
+            <HomeAppGrid apps={APP_DEFS} onLaunch={setOpenApp} />
+          </View>
         </View>
       )}
     </View>
@@ -55,9 +59,14 @@ const styles = StyleSheet.create({
   },
   home: {
     flex: 1,
-    alignItems: 'center',
+  },
+  centerLayer: {
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
-    gap: 48,
+    alignItems: 'center',
+  },
+  gridLayer: {
+    zIndex: 1,
     padding: 24,
   },
   greeting: {

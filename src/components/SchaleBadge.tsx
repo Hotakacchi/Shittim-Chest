@@ -8,7 +8,8 @@ export function SchaleBadge() {
 
 const styles = StyleSheet.create({
   mark: {
-    width: 40,
-    height: 59,
+    width: 236,
+    height: 349,
+    opacity: 0.9,
   },
 });
