@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import Svg, {
   Defs,
   LinearGradient,
@@ -16,9 +16,9 @@ const TILE_H = 61;
 const SCROLL_DURATION_MS = 9000;
 
 export function GradientTriangleBackground() {
-  const { width: screenW, height: screenH } = useWindowDimensions();
-  const layerW = screenW + TILE_W * 2;
-  const layerH = screenH + TILE_H * 2;
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const layerW = containerSize.width + TILE_W * 2;
+  const layerH = containerSize.height + TILE_H * 2;
   const scroll = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -37,8 +37,13 @@ export function GradientTriangleBackground() {
   const translateX = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_W] });
   const translateY = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_H] });
 
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setContainerSize({ width, height });
+  };
+
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={StyleSheet.absoluteFill} pointerEvents="none" onLayout={handleLayout}>
       <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
@@ -49,39 +54,41 @@ export function GradientTriangleBackground() {
         <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-grad)" />
       </Svg>
 
-      <View style={[StyleSheet.absoluteFill, styles.clip]}>
-        <Animated.View
-          style={{
-            position: 'absolute',
-            left: -TILE_W,
-            top: -TILE_H,
-            width: layerW,
-            height: layerH,
-            transform: [{ translateX }, { translateY }],
-          }}
-        >
-          <Svg width={layerW} height={layerH}>
-            <Defs>
-              <Pattern
-                id="bg-triangles"
-                width={TILE_W}
-                height={TILE_H}
-                patternUnits="userSpaceOnUse"
-              >
-                <Path
-                  d={`M0,${TILE_H} L${TILE_W / 2},0 L${TILE_W},${TILE_H} Z`}
-                  fill="rgba(255,255,255,0.10)"
-                />
-                <Path
-                  d={`M0,0 L${TILE_W / 2},${TILE_H} L${TILE_W},0 Z`}
-                  fill="rgba(255,255,255,0.04)"
-                />
-              </Pattern>
-            </Defs>
-            <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-triangles)" />
-          </Svg>
-        </Animated.View>
-      </View>
+      {containerSize.width > 0 && containerSize.height > 0 && (
+        <View style={[StyleSheet.absoluteFill, styles.clip]}>
+          <Animated.View
+            style={{
+              position: 'absolute',
+              left: -TILE_W,
+              top: -TILE_H,
+              width: layerW,
+              height: layerH,
+              transform: [{ translateX }, { translateY }],
+            }}
+          >
+            <Svg width={layerW} height={layerH}>
+              <Defs>
+                <Pattern
+                  id="bg-triangles"
+                  width={TILE_W}
+                  height={TILE_H}
+                  patternUnits="userSpaceOnUse"
+                >
+                  <Path
+                    d={`M0,${TILE_H} L${TILE_W / 2},0 L${TILE_W},${TILE_H} Z`}
+                    fill="rgba(255,255,255,0.10)"
+                  />
+                  <Path
+                    d={`M0,0 L${TILE_W / 2},${TILE_H} L${TILE_W},0 Z`}
+                    fill="rgba(255,255,255,0.04)"
+                  />
+                </Pattern>
+              </Defs>
+              <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-triangles)" />
+            </Svg>
+          </Animated.View>
+        </View>
+      )}
 
       <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
         <Defs>
