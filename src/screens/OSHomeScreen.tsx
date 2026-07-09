@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   centerLayer: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
   },

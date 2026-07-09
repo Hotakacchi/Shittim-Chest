@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   center: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
   },
