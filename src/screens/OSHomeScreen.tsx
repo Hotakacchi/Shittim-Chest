@@ -3,12 +3,18 @@ import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../theme/colors';
 import { GradientTriangleBackground } from '../components/GradientTriangleBackground';
+import { SchaleBadge } from '../components/SchaleBadge';
 import { ClockDisplay } from '../components/ClockDisplay';
-import { AppTile } from '../components/AppTile';
 import { AppWindow } from '../components/AppWindow';
+import { HomeAppGrid, AppDef } from '../components/HomeAppGrid';
+import { ClockIcon, CalendarIcon, ChecklistIcon, GearIcon } from '../components/icons/AppIcons';
 
-const APPS = ['SCHEDULE', 'TASK', 'SYSTEM'] as const;
-type AppKey = (typeof APPS)[number];
+const APP_DEFS: AppDef[] = [
+  { key: 'CLOCK', label: 'CLOCK', Icon: ClockIcon },
+  { key: 'SCHEDULE', label: 'SCHEDULE', Icon: CalendarIcon },
+  { key: 'TASK', label: 'TASK', Icon: ChecklistIcon },
+  { key: 'SYSTEM', label: 'SYSTEM', Icon: GearIcon },
+];
 
 function getGreeting(hour: number): string {
   if (hour >= 5 && hour < 11) return 'おはようございます、先生。';
@@ -18,27 +24,24 @@ function getGreeting(hour: number): string {
 }
 
 export function OSHomeScreen() {
-  const [openApp, setOpenApp] = useState<AppKey | null>(null);
+  const [openApp, setOpenApp] = useState<string | null>(null);
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       <GradientTriangleBackground />
 
-      {openApp ? (
+      {openApp === 'CLOCK' ? (
+        <AppWindow title="CLOCK" onClose={() => setOpenApp(null)}>
+          <ClockDisplay />
+          <Text style={styles.greeting}>{getGreeting(new Date().getHours())}</Text>
+        </AppWindow>
+      ) : openApp ? (
         <AppWindow title={openApp} onClose={() => setOpenApp(null)} />
       ) : (
         <View style={styles.home}>
-          <View style={styles.clockArea}>
-            <ClockDisplay />
-            <Text style={styles.greeting}>{getGreeting(new Date().getHours())}</Text>
-          </View>
-
-          <View style={styles.dock}>
-            {APPS.map((app) => (
-              <AppTile key={app} label={app} onPress={() => setOpenApp(app)} />
-            ))}
-          </View>
+          <SchaleBadge />
+          <HomeAppGrid apps={APP_DEFS} onLaunch={setOpenApp} />
         </View>
       )}
     </View>
@@ -52,22 +55,15 @@ const styles = StyleSheet.create({
   },
   home: {
     flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 96,
-    paddingBottom: 64,
-  },
-  clockArea: {
-    alignItems: 'center',
-    gap: 12,
+    justifyContent: 'center',
+    gap: 48,
+    padding: 24,
   },
   greeting: {
+    marginTop: 12,
     color: colors.inkDim,
     fontSize: 16,
     letterSpacing: 1,
-  },
-  dock: {
-    flexDirection: 'row',
-    gap: 20,
   },
 });
