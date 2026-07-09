@@ -9,11 +9,13 @@ import {
   Text,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../theme/colors';
+import { STORAGE_KEYS } from '../lib/storageKeys';
 import type { IconProps } from './icons/AppIcons';
 
-const TILE_SIZE = 104;
-const GRID_GAP = 28;
+const TILE_SIZE = 86;
+const GRID_GAP = TILE_SIZE;
 const LABEL_AREA = 32;
 const CELL_W = TILE_SIZE + GRID_GAP;
 const CELL_H = TILE_SIZE + LABEL_AREA + GRID_GAP;
@@ -27,6 +29,11 @@ export type AppDef = {
 };
 
 type Point = { x: number; y: number };
+type Cell = { col: number; row: number };
+type Orientation = 'portrait' | 'landscape';
+type PositionsBySize = Record<Orientation, Record<string, Cell>>;
+
+const EMPTY_POSITIONS: PositionsBySize = { portrait: {}, landscape: {} };
 
 type Props = {
   apps: AppDef[];
@@ -34,30 +41,92 @@ type Props = {
 };
 
 export function HomeAppGrid({ apps, onLaunch }: Props) {
-  const [order, setOrder] = useState(() => apps.map((a) => a.key));
+  const [positionsBySize, setPositionsBySize] = useState<PositionsBySize>(EMPTY_POSITIONS);
+  const [savedPositionsBySize, setSavedPositionsBySize] = useState<PositionsBySize | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [draggingKey, setDraggingKey] = useState<string | null>(null);
+
+  const orientation: Orientation = containerSize.width >= containerSize.height ? 'landscape' : 'portrait';
+  const positions = positionsBySize[orientation];
+
+  useEffect(() => {
+    AsyncStorage.getItem(STORAGE_KEYS.iconPositions).then((raw) => {
+      if (!raw) {
+        setSavedPositionsBySize(EMPTY_POSITIONS);
+        return;
+      }
+      try {
+        const parsed = JSON.parse(raw);
+        setSavedPositionsBySize({
+          portrait: parsed.portrait ?? {},
+          landscape: parsed.landscape ?? {},
+        });
+      } catch {
+        setSavedPositionsBySize(EMPTY_POSITIONS);
+      }
+    });
+  }, []);
 
   const editModeRef = useRef(editMode);
   useEffect(() => {
     editModeRef.current = editMode;
   }, [editMode]);
-  const orderRef = useRef(order);
-  useEffect(() => {
-    orderRef.current = order;
-  }, [order]);
 
-  const maxColumns = Math.max(1, Math.floor((containerWidth + GRID_GAP) / CELL_W));
-  const columns = Math.min(maxColumns, apps.length);
+  const columns = Math.max(1, Math.floor((containerSize.width + GRID_GAP) / CELL_W));
+  const rows = Math.max(1, Math.floor((containerSize.height + GRID_GAP) / CELL_H));
   const gridWidth = columns * CELL_W - GRID_GAP;
-  const offsetX = Math.max(0, (containerWidth - gridWidth) / 2);
+  const gridHeight = rows * CELL_H - GRID_GAP;
+  const offsetX = Math.max(0, (containerSize.width - gridWidth) / 2);
+  const offsetY = Math.max(0, (containerSize.height - gridHeight) / 2);
 
-  function slotPosition(index: number): Point {
-    const row = Math.floor(index / columns);
-    const col = index % columns;
-    return { x: offsetX + col * CELL_W, y: row * CELL_H };
+  function cellPosition(cell: Cell): Point {
+    return { x: offsetX + cell.col * CELL_W, y: offsetY + cell.row * CELL_H };
   }
+
+  function clampCell(cell: Cell): Cell {
+    return {
+      col: Math.min(Math.max(cell.col, 0), columns - 1),
+      row: Math.min(Math.max(cell.row, 0), rows - 1),
+    };
+  }
+
+  // Seed initial placement for the current orientation once the container is
+  // measured and any saved layout has been loaded: restore a saved cell per
+  // app for this orientation, or fall back to a centered row for apps that
+  // have never been placed in it before.
+  useEffect(() => {
+    if (containerSize.width === 0 || containerSize.height === 0) return;
+    if (savedPositionsBySize === null) return;
+    setPositionsBySize((prev) => {
+      const current = prev[orientation];
+      const missing = apps.filter((a) => !current[a.key]);
+      if (missing.length === 0) return prev;
+      const startCol = Math.max(0, Math.floor((columns - apps.length) / 2));
+      const midRow = Math.floor(rows / 2);
+      const nextForOrientation = { ...current };
+      missing.forEach((app) => {
+        const index = apps.indexOf(app);
+        const saved = savedPositionsBySize[orientation][app.key];
+        nextForOrientation[app.key] = saved
+          ? clampCell(saved)
+          : clampCell({ col: startCol + index, row: midRow });
+      });
+      return { ...prev, [orientation]: nextForOrientation };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerSize.width, containerSize.height, apps, savedPositionsBySize, orientation, columns, rows]);
+
+  // Persist layout changes (skips the initial empty state before seeding).
+  useEffect(() => {
+    if (
+      Object.keys(positionsBySize.portrait).length === 0 &&
+      Object.keys(positionsBySize.landscape).length === 0
+    ) {
+      return;
+    }
+    AsyncStorage.setItem(STORAGE_KEYS.iconPositions, JSON.stringify(positionsBySize));
+  }, [positionsBySize]);
 
   const animsRef = useRef<Record<string, Animated.ValueXY>>({});
   const currentRef = useRef<Record<string, Point>>({});
@@ -71,9 +140,8 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
   });
 
   useEffect(() => {
-    if (containerWidth === 0) return;
-    order.forEach((key, index) => {
-      const pos = slotPosition(index);
+    Object.entries(positions).forEach(([key, cell]) => {
+      const pos = cellPosition(cell);
       currentRef.current[key] = pos;
       if (key === draggingKey) return;
       Animated.spring(animsRef.current[key], {
@@ -84,7 +152,7 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
       }).start();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, columns, containerWidth, draggingKey]);
+  }, [positions, columns, rows, containerSize, draggingKey]);
 
   useEffect(() => {
     const loops: Animated.CompositeAnimation[] = [];
@@ -155,31 +223,30 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
           if (longPressTimer) clearTimeout(longPressTimer);
           if (dragging) {
             const base = currentRef.current[key] ?? { x: 0, y: 0 };
-            const dropCenter = {
-              x: base.x + gesture.dx + TILE_SIZE / 2,
-              y: base.y + gesture.dy + TILE_SIZE / 2,
-            };
+            const dropCenterX = base.x + gesture.dx + TILE_SIZE / 2;
+            const dropCenterY = base.y + gesture.dy + TILE_SIZE / 2;
 
-            let nearestIndex = 0;
-            let nearestDist = Infinity;
-            orderRef.current.forEach((_k, idx) => {
-              const slot = slotPosition(idx);
-              const center = { x: slot.x + TILE_SIZE / 2, y: slot.y + TILE_SIZE / 2 };
-              const dist = (center.x - dropCenter.x) ** 2 + (center.y - dropCenter.y) ** 2;
-              if (dist < nearestDist) {
-                nearestDist = dist;
-                nearestIndex = idx;
-              }
+            const targetCell = clampCell({
+              col: Math.round((dropCenterX - offsetX - TILE_SIZE / 2) / CELL_W),
+              row: Math.round((dropCenterY - offsetY - TILE_SIZE / 2) / CELL_H),
             });
 
-            const next = [...orderRef.current];
-            const fromIndex = next.indexOf(key);
-            next.splice(fromIndex, 1);
-            next.splice(nearestIndex, 0, key);
+            setPositionsBySize((prev) => {
+              const current = prev[orientation];
+              const next = { ...current };
+              const occupant = Object.entries(current).find(
+                ([otherKey, cell]) =>
+                  otherKey !== key && cell.col === targetCell.col && cell.row === targetCell.row,
+              );
+              if (occupant) {
+                next[occupant[0]] = current[key];
+              }
+              next[key] = targetCell;
+              return { ...prev, [orientation]: next };
+            });
 
             Animated.spring(scaleRef.current[key], { toValue: 1, useNativeDriver: false }).start();
             setDraggingKey(null);
-            setOrder(next);
           } else if (!moved) {
             onLaunch(key);
           }
@@ -189,21 +256,19 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
           if (dragging) {
             Animated.spring(scaleRef.current[key], { toValue: 1, useNativeDriver: false }).start();
             setDraggingKey(null);
-            setOrder((current) => [...current]);
+            setPositionsBySize((prev) => ({ ...prev, [orientation]: { ...prev[orientation] } }));
           }
         },
       });
     });
     return map;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apps, onLaunch]);
+  }, [apps, onLaunch, columns, rows, offsetX, offsetY, orientation]);
 
   const handleLayout = (event: LayoutChangeEvent) => {
-    setContainerWidth(event.nativeEvent.layout.width);
+    const { width, height } = event.nativeEvent.layout;
+    setContainerSize({ width, height });
   };
-
-  const rowCount = columns > 0 ? Math.ceil(order.length / columns) : 0;
-  const gridHeight = rowCount * CELL_H;
 
   return (
     <Pressable
@@ -220,49 +285,51 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
           </Pressable>
         </View>
       )}
-      <View style={{ height: gridHeight, width: '100%' }}>
-        {apps.map((app) => {
-          const anim = animsRef.current[app.key];
-          const scale = scaleRef.current[app.key];
-          const jiggle = jiggleRef.current[app.key];
-          const rotate = jiggle.interpolate({ inputRange: [-1, 1], outputRange: ['-2.2deg', '2.2deg'] });
-          const Icon = app.Icon;
-          return (
-            <Animated.View
-              key={app.key}
-              {...panResponders[app.key].panHandlers}
-              style={[
-                styles.tileWrap,
-                {
-                  transform: [
-                    { translateX: anim.x },
-                    { translateY: anim.y },
-                    { scale },
-                    { rotate: editMode ? rotate : '0deg' },
-                  ],
-                  zIndex: draggingKey === app.key ? 10 : 1,
-                },
-              ]}
-            >
-              <View style={styles.tile}>
-                <Icon size={32} />
-              </View>
-              <Text style={styles.label}>{app.label}</Text>
-            </Animated.View>
-          );
-        })}
-      </View>
+      {apps.map((app) => {
+        if (!positions[app.key]) return null;
+        const anim = animsRef.current[app.key];
+        const scale = scaleRef.current[app.key];
+        const jiggle = jiggleRef.current[app.key];
+        const rotate = jiggle.interpolate({ inputRange: [-1, 1], outputRange: ['-2.2deg', '2.2deg'] });
+        const Icon = app.Icon;
+        return (
+          <Animated.View
+            key={app.key}
+            {...panResponders[app.key].panHandlers}
+            style={[
+              styles.tileWrap,
+              {
+                transform: [
+                  { translateX: anim.x },
+                  { translateY: anim.y },
+                  { scale },
+                  { rotate: editMode ? rotate : '0deg' },
+                ],
+                zIndex: draggingKey === app.key ? 10 : 1,
+              },
+            ]}
+          >
+            <View style={styles.tile}>
+              <Icon size={44} />
+            </View>
+            <Text style={styles.label}>{app.label}</Text>
+          </Animated.View>
+        );
+      })}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '100%',
   },
   doneRow: {
-    alignItems: 'flex-end',
-    marginBottom: 12,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 20,
   },
   doneButton: {
     paddingHorizontal: 16,

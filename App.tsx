@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { useIsTablet } from './src/hooks/useIsTablet';
 import { BootScreen } from './src/screens/BootScreen';
 import { OSHomeScreen } from './src/screens/OSHomeScreen';
@@ -17,6 +18,7 @@ export default function App() {
     AsyncStorage.getItem(STORAGE_KEYS.skipBootAnimation).then((value) => {
       setSkipBoot(value === 'true');
     });
+    ScreenOrientation.unlockAsync();
   }, []);
 
   if (skipBoot === null) {
