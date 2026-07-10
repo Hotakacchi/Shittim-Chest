@@ -291,19 +291,9 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apps, onLaunch, columns, rows, offsetX, offsetY, orientation]);
 
-  // Rotation can fire onLayout several times in quick succession as the
-  // frame animates through intermediate sizes. Debounce so only the size it
-  // settles on drives seeding/persisting icon positions — acting on a
-  // transient mid-rotation size would seed apps into the wrong cell and that
-  // cell then gets persisted, leaving icons stuck off-grid after the layout
-  // itself has corrected.
-  const layoutDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-    if (layoutDebounceRef.current) clearTimeout(layoutDebounceRef.current);
-    layoutDebounceRef.current = setTimeout(() => {
-      setContainerSize({ width, height });
-    }, 150);
+    setContainerSize({ width, height });
   };
 
   return (

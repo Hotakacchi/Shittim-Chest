@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, {
   Defs,
   LinearGradient,
@@ -15,10 +15,17 @@ const TILE_W = 70;
 const TILE_H = 61;
 const SCROLL_DURATION_MS = 9000;
 
+const AnimatedPattern = Animated.createAnimatedComponent(Pattern);
+
 export function GradientTriangleBackground() {
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const layerW = containerSize.width + TILE_W * 2;
-  const layerH = containerSize.height + TILE_H * 2;
+  // react-native-svg on iOS fails to render an <Svg> given large explicit
+  // numeric width/height (confirmed by direct on-device testing: a
+  // percentage-sized Svg always fills correctly, but a same-structured Svg
+  // sized to window dimensions + tile padding in pixels renders short in
+  // portrait and clipped in landscape). So the scrolling tile effect is done
+  // by animating the <Pattern>'s own x/y origin instead of translating an
+  // oversized absolutely-positioned Svg layer — every Svg here stays at a
+  // plain 100%/100%.
   const scroll = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -27,33 +34,18 @@ export function GradientTriangleBackground() {
         toValue: 1,
         duration: SCROLL_DURATION_MS,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     );
     loop.start();
     return () => loop.stop();
   }, [scroll]);
 
-  const translateX = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_W] });
-  const translateY = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_H] });
-
-  // Rotation fires onLayout several times as the frame animates through
-  // intermediate sizes. Debounce so the scrolling triangle layer (sized off
-  // this state) only resizes to the size the layout settles on — otherwise
-  // it can get stuck sized for a transient mid-rotation frame, leaving a
-  // patternless gap where it falls short of the real (always-reactive,
-  // percentage-sized) gradient rects behind it.
-  const layoutDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    if (layoutDebounceRef.current) clearTimeout(layoutDebounceRef.current);
-    layoutDebounceRef.current = setTimeout(() => {
-      setContainerSize({ width, height });
-    }, 150);
-  };
+  const patternX = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_W] });
+  const patternY = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_H] });
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none" onLayout={handleLayout}>
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
       <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
@@ -64,41 +56,28 @@ export function GradientTriangleBackground() {
         <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-grad)" />
       </Svg>
 
-      {containerSize.width > 0 && containerSize.height > 0 && (
-        <View style={[StyleSheet.absoluteFill, styles.clip]}>
-          <Animated.View
-            style={{
-              position: 'absolute',
-              left: -TILE_W,
-              top: -TILE_H,
-              width: layerW,
-              height: layerH,
-              transform: [{ translateX }, { translateY }],
-            }}
+      <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
+        <Defs>
+          <AnimatedPattern
+            id="bg-triangles"
+            x={patternX}
+            y={patternY}
+            width={TILE_W}
+            height={TILE_H}
+            patternUnits="userSpaceOnUse"
           >
-            <Svg width={layerW} height={layerH}>
-              <Defs>
-                <Pattern
-                  id="bg-triangles"
-                  width={TILE_W}
-                  height={TILE_H}
-                  patternUnits="userSpaceOnUse"
-                >
-                  <Path
-                    d={`M0,${TILE_H} L${TILE_W / 2},0 L${TILE_W},${TILE_H} Z`}
-                    fill="rgba(255,255,255,0.10)"
-                  />
-                  <Path
-                    d={`M0,0 L${TILE_W / 2},${TILE_H} L${TILE_W},0 Z`}
-                    fill="rgba(255,255,255,0.04)"
-                  />
-                </Pattern>
-              </Defs>
-              <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-triangles)" />
-            </Svg>
-          </Animated.View>
-        </View>
-      )}
+            <Path
+              d={`M0,${TILE_H} L${TILE_W / 2},0 L${TILE_W},${TILE_H} Z`}
+              fill="rgba(255,255,255,0.10)"
+            />
+            <Path
+              d={`M0,0 L${TILE_W / 2},${TILE_H} L${TILE_W},0 Z`}
+              fill="rgba(255,255,255,0.04)"
+            />
+          </AnimatedPattern>
+        </Defs>
+        <Rect x={0} y={0} width="100%" height="100%" fill="url(#bg-triangles)" />
+      </Svg>
 
       <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
         <Defs>
@@ -112,9 +91,3 @@ export function GradientTriangleBackground() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  clip: {
-    overflow: 'hidden',
-  },
-});
