@@ -9,6 +9,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.hotakacchi.shittimchest",
+      "buildNumber": "2",
       "infoPlist": {
         "NSCameraUsageDescription": "写真を撮影するためにカメラを使用します。",
         "ITSAppUsesNonExemptEncryption": false
