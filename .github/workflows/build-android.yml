@@ -24,11 +24,19 @@ jobs:
       - name: Prebuild native Android project
         run: npx expo prebuild --platform android --no-install
 
-      - name: Build debug APK
+      - name: Sign the release build with the debug keystore
+        run: |
+          # A debug-signed release APK is fine for sideloading outside the
+          # Play Store — it just needs to embed the JS bundle instead of
+          # trying to fetch it from a Metro dev server, which assembleDebug
+          # doesn't do by default.
+          sed -i '/release {/a\            signingConfig signingConfigs.debug' android/app/build.gradle
+
+      - name: Build release APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleRelease
 
       - name: Locate APK
         id: locate
