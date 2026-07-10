@@ -22,7 +22,7 @@ iPad（タブレット）専用。iOS/iPadOSでの動作を想定しています
 
 本アプリはApple Developer Program（有料）を使わず、無料のApple IDで動作するサイドロードツールで配布しています。どちらも[Releases](https://github.com/Hotakacchi/Shittim-Chest/releases)から`.ipa`を入手して使います。
 
-### iOS: Sideloadlyでのサイドロード（推奨・PC1台で完結）
+### iOS: Sideloadlyでのサイドロード
 
 1. PCに以下をインストール
    - [iTunes（Apple公式サイト版。Microsoft Store版は不可）](https://www.apple.com/itunes/)
@@ -38,7 +38,7 @@ iPad（タブレット）専用。iOS/iPadOSでの動作を想定しています
 
 無料のApple IDによる署名は**7日ごとに期限切れ**になります。AltStoreのような自動再署名機能はSideloadly単体にはないため、期限が切れる前に同じ手順（3〜7）を繰り返して再インストールしてください。
 
-### iOS: AltStoreでのサイドロード（友達への配布向け）
+### iOS: AltStoreでのサイドロード
 
 自分だけでなく友達にも配りたい場合、AltStore（Classic）+ カスタムソースを使うと、`.ipa`を都度手渡す代わりに「ソースを1回登録するだけ」で済みます。
 
