@@ -5,13 +5,19 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Select latest available Xcode
+        run: |
+          ls /Applications | grep Xcode
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)"
+          xcodebuild -version
 
       - name: Install dependencies
         run: npm ci
