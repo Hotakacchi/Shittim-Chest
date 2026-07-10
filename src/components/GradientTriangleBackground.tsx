@@ -37,9 +37,19 @@ export function GradientTriangleBackground() {
   const translateX = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_W] });
   const translateY = scroll.interpolate({ inputRange: [0, 1], outputRange: [0, -TILE_H] });
 
+  // Rotation fires onLayout several times as the frame animates through
+  // intermediate sizes. Debounce so the scrolling triangle layer (sized off
+  // this state) only resizes to the size the layout settles on — otherwise
+  // it can get stuck sized for a transient mid-rotation frame, leaving a
+  // patternless gap where it falls short of the real (always-reactive,
+  // percentage-sized) gradient rects behind it.
+  const layoutDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-    setContainerSize({ width, height });
+    if (layoutDebounceRef.current) clearTimeout(layoutDebounceRef.current);
+    layoutDebounceRef.current = setTimeout(() => {
+      setContainerSize({ width, height });
+    }, 150);
   };
 
   return (
