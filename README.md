@@ -22,18 +22,6 @@ iPad（タブレット）専用。iOS/iPadOSでの動作を想定しています
 
 本アプリはApple Developer Program（有料）を利用せず、無料のApple IDで動作する[AltStore](https://faq.altstore.io/) を使ってサイドロードする形で配布しています。
 
-### 自分でインストールする場合
-
-1. Windows/MacにAltServerをインストールし、常駐させる
-2. iPadをUSBケーブルで接続し、AltServerのメニューから接続したiPadを選択
-3. [Releases](https://github.com/Hotakacchi/Shittim-Chest/releases) から最新の `.ipa` をダウンロードし、AltServerでインストール
-4. 自分のApple IDでサイン後、iPad側の「設定 > 一般 > VPNとデバイス管理」から証明書を信頼する
-5. iOS 16以降では「設定 > プライバシーとセキュリティ > デベロッパモード」を有効にする
-
-インストール後は、AltStoreの「Background Refresh」を有効にし、AltServerが動いているPCと同じWi-Fiに定期的に接続することで、7日ごとの自動再署名が行われます。
-
-### 友達として招待された場合（カスタムソース経由）
-
 1. 自分のiPadにAltStore（Classic）をインストール
 2. AltStoreの「Sources」タブで以下のURLを追加
 
