@@ -21,6 +21,7 @@ const CELL_W = TILE_SIZE + GRID_GAP;
 const CELL_H = TILE_SIZE + LABEL_AREA + GRID_GAP;
 const LONG_PRESS_MS = 420;
 const DRAG_SLOP = 8;
+const DOUBLE_TAP_MS = 300;
 
 export type AppDef = {
   key: string;
@@ -46,6 +47,9 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
   const [editMode, setEditMode] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [draggingKey, setDraggingKey] = useState<string | null>(null);
+  const [iconsHidden, setIconsHidden] = useState(false);
+  const iconsOpacity = useRef(new Animated.Value(1)).current;
+  const lastTapRef = useRef(0);
 
   const orientation: Orientation = containerSize.width >= containerSize.height ? 'landscape' : 'portrait';
   const positions = positionsBySize[orientation];
@@ -296,14 +300,39 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
     setContainerSize({ width, height });
   };
 
+  useEffect(() => {
+    Animated.timing(iconsOpacity, {
+      toValue: iconsHidden ? 0 : 1,
+      duration: 220,
+      useNativeDriver: false,
+    }).start();
+  }, [iconsHidden, iconsOpacity]);
+
+  function handleBackgroundPress() {
+    if (editModeRef.current) {
+      setEditMode(false);
+      return;
+    }
+    if (iconsHidden) {
+      setIconsHidden(false);
+      lastTapRef.current = 0;
+      return;
+    }
+    const now = Date.now();
+    if (now - lastTapRef.current < DOUBLE_TAP_MS) {
+      setIconsHidden(true);
+      lastTapRef.current = 0;
+    } else {
+      lastTapRef.current = now;
+    }
+  }
+
   return (
-    <Pressable
-      style={styles.container}
-      onLayout={handleLayout}
-      onPress={() => {
-        if (editModeRef.current) setEditMode(false);
-      }}
-    >
+    <Pressable style={styles.container} onLayout={handleLayout} onPress={handleBackgroundPress}>
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { opacity: iconsOpacity }]}
+        pointerEvents={iconsHidden ? 'none' : 'auto'}
+      >
       {editMode && (
         <View style={styles.doneRow}>
           <Pressable style={styles.doneButton} onPress={() => setEditMode(false)}>
@@ -342,6 +371,7 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
           </Animated.View>
         );
       })}
+      </Animated.View>
     </Pressable>
   );
 }

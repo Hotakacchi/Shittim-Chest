@@ -7,11 +7,18 @@ import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
 import appConfig from '../../../app.json';
 
-type UpdateStatus = 'idle' | 'checking' | 'downloading' | 'upToDate' | 'error';
+type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'upToDate' | 'error';
 
 function UpdateSection() {
   const [status, setStatus] = useState<UpdateStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (Updates.isEnabled) {
+      checkForUpdate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!Updates.isEnabled) {
     return (
@@ -31,11 +38,17 @@ function UpdateSection() {
     setErrorMessage('');
     try {
       const result = await Updates.checkForUpdateAsync();
-      if (!result.isAvailable) {
-        setStatus('upToDate');
-        return;
-      }
-      setStatus('downloading');
+      setStatus(result.isAvailable ? 'available' : 'upToDate');
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function applyUpdate() {
+    setStatus('downloading');
+    setErrorMessage('');
+    try {
       await Updates.fetchUpdateAsync();
       await Updates.reloadAsync();
     } catch (error) {
@@ -47,10 +60,13 @@ function UpdateSection() {
   const statusLabel: Record<UpdateStatus, string> = {
     idle: `チャンネル: ${Updates.channel ?? '未設定'}`,
     checking: '確認中…',
+    available: '別バージョンが見つかりました',
     downloading: '更新をダウンロード中…',
     upToDate: '最新の状態です',
     error: `エラー: ${errorMessage}`,
   };
+
+  const busy = status === 'checking' || status === 'downloading';
 
   return (
     <View style={styles.row}>
@@ -60,10 +76,12 @@ function UpdateSection() {
       </View>
       <Pressable
         style={styles.updateButton}
-        onPress={checkForUpdate}
-        disabled={status === 'checking' || status === 'downloading'}
+        onPress={status === 'available' ? applyUpdate : checkForUpdate}
+        disabled={busy}
       >
-        <Text style={styles.updateButtonLabel}>確認する</Text>
+        <Text style={styles.updateButtonLabel}>
+          {status === 'available' ? '適用する' : '確認する'}
+        </Text>
       </Pressable>
     </View>
   );
