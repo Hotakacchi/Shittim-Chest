@@ -33,10 +33,11 @@ jobs:
           sed -i '/release {/a\            signingConfig signingConfigs.debug' android/app/build.gradle
 
       - name: Build release APK
+        timeout-minutes: 15
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --stacktrace --no-daemon
 
       - name: Locate APK
         id: locate
