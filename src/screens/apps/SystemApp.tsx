@@ -5,7 +5,10 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import * as Updates from 'expo-updates';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
+import { loadTapVolume, setTapVolume } from '../../lib/tapVolume';
 import appConfig from '../../../app.json';
+
+const VOLUME_LEVELS = [0, 0.25, 0.5, 0.75, 1];
 
 type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'upToDate' | 'error';
 
@@ -114,6 +117,47 @@ function SettingRow({
   );
 }
 
+function VolumeRow() {
+  const [volume, setVolume] = useState(1);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    loadTapVolume().then((value) => {
+      setVolume(value);
+      setLoaded(true);
+    });
+  }, []);
+
+  function onSelect(value: number) {
+    setVolume(value);
+    setTapVolume(value);
+  }
+
+  if (!loaded) return null;
+
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>タップ音の音量</Text>
+        <Text style={styles.rowDescription}>アイコン・背景をタップしたときの効果音の大きさ</Text>
+      </View>
+      <View style={styles.volumeLevels}>
+        {VOLUME_LEVELS.map((level) => (
+          <Pressable
+            key={level}
+            onPress={() => onSelect(level)}
+            style={[
+              styles.volumeDot,
+              { opacity: 0.3 + level * 0.7 },
+              volume === level && styles.volumeDotActive,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export function SystemApp() {
   const [keepAwake, setKeepAwake] = useState(false);
   const [skipBoot, setSkipBoot] = useState(false);
@@ -162,6 +206,8 @@ export function SystemApp() {
         onChange={onChangeSkipBoot}
       />
 
+      <VolumeRow />
+
       <UpdateSection />
 
       <View style={styles.footer}>
@@ -201,6 +247,21 @@ const styles = StyleSheet.create({
   rowDescription: {
     color: colors.inkDim,
     fontSize: 12,
+  },
+  volumeLevels: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  volumeDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.accent,
+  },
+  volumeDotActive: {
+    opacity: 1,
+    borderWidth: 2,
+    borderColor: colors.ink,
   },
   updateButton: {
     paddingHorizontal: 16,

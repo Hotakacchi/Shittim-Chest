@@ -9,6 +9,7 @@ import { GradientTriangleBackground } from '../components/GradientTriangleBackgr
 import { SchaleBadge } from '../components/SchaleBadge';
 import { AppWindow } from '../components/AppWindow';
 import { HomeAppGrid, AppDef } from '../components/HomeAppGrid';
+import { TapEffectsLayer } from '../components/TapEffectsLayer';
 import {
   ClockIcon,
   CalendarIcon,
@@ -58,20 +59,22 @@ export function OSHomeScreen() {
       <StatusBar style="dark" />
       <GradientTriangleBackground />
 
-      {AppScreen ? (
-        <AppWindow title={openApp!} onClose={() => setOpenApp(null)}>
-          <AppScreen />
-        </AppWindow>
-      ) : (
-        <View style={styles.home}>
-          <View style={styles.centerLayer} pointerEvents="none">
-            <SchaleBadge />
+      <TapEffectsLayer>
+        {AppScreen ? (
+          <AppWindow title={openApp!} onClose={() => setOpenApp(null)}>
+            <AppScreen />
+          </AppWindow>
+        ) : (
+          <View style={styles.home}>
+            <View style={styles.centerLayer} pointerEvents="none">
+              <SchaleBadge />
+            </View>
+            <View style={[styles.centerLayer, styles.gridLayer]}>
+              <HomeAppGrid apps={APP_DEFS} onLaunch={setOpenApp} />
+            </View>
           </View>
-          <View style={[styles.centerLayer, styles.gridLayer]}>
-            <HomeAppGrid apps={APP_DEFS} onLaunch={setOpenApp} />
-          </View>
-        </View>
-      )}
+        )}
+      </TapEffectsLayer>
     </View>
   );
 }

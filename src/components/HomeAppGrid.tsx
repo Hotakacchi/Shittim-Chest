@@ -10,14 +10,9 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import { colors } from '../theme/colors';
 import { STORAGE_KEYS } from '../lib/storageKeys';
 import type { IconProps } from './icons/AppIcons';
-
-const tapSfx = require('../../assets/sfx/tap.wav');
-const RIPPLE_SIZE = 68;
-const RIPPLE_DURATION_MS = 480;
 
 const TILE_SIZE = 86;
 const GRID_GAP = TILE_SIZE;
@@ -41,8 +36,6 @@ type PositionsBySize = Record<Orientation, Record<string, Cell>>;
 
 const EMPTY_POSITIONS: PositionsBySize = { portrait: {}, landscape: {} };
 
-type Ripple = { id: number; x: number; y: number; anim: Animated.Value };
-
 type Props = {
   apps: AppDef[];
   onLaunch: (key: string) => void;
@@ -55,32 +48,8 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [draggingKey, setDraggingKey] = useState<string | null>(null);
   const [iconsHidden, setIconsHidden] = useState(false);
-  const [ripples, setRipples] = useState<Ripple[]>([]);
   const iconsOpacity = useRef(new Animated.Value(1)).current;
   const lastTapRef = useRef(0);
-  const rippleIdRef = useRef(0);
-  const tapSound = useAudioPlayer(tapSfx);
-
-  useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true });
-  }, []);
-
-  function playTapEffects(center: Point) {
-    tapSound.seekTo(0);
-    tapSound.play();
-
-    const id = rippleIdRef.current++;
-    const anim = new Animated.Value(0);
-    setRipples((prev) => [...prev, { id, x: center.x, y: center.y, anim }]);
-    Animated.timing(anim, {
-      toValue: 1,
-      duration: RIPPLE_DURATION_MS,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
-    });
-  }
 
   const orientation: Orientation = containerSize.width >= containerSize.height ? 'landscape' : 'portrait';
   const positions = positionsBySize[orientation];
@@ -280,7 +249,7 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
             animsRef.current[key].setValue({ x: base.x + gesture.dx, y: base.y + gesture.dy });
           }
         },
-        onPanResponderRelease: (evt, gesture) => {
+        onPanResponderRelease: (_evt, gesture) => {
           if (longPressTimer) clearTimeout(longPressTimer);
           if (dragging) {
             const base = currentRef.current[key] ?? { x: 0, y: 0 };
@@ -309,12 +278,7 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
             Animated.spring(scaleRef.current[key], { toValue: 1, useNativeDriver: false }).start();
             setDraggingKey(null);
           } else if (!moved) {
-            const base = currentRef.current[key] ?? { x: 0, y: 0 };
-            const { locationX, locationY } = evt.nativeEvent;
-            playTapEffects({ x: base.x + locationX, y: base.y + locationY });
-            // Give the ripple a moment on screen before the app takes over —
-            // launching immediately covers it before it's ever visible.
-            setTimeout(() => onLaunch(key), 140);
+            onLaunch(key);
           }
         },
         onPanResponderTerminate: () => {
@@ -344,9 +308,7 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
     }).start();
   }, [iconsHidden, iconsOpacity]);
 
-  function handleBackgroundPress(event: { nativeEvent: { locationX: number; locationY: number } }) {
-    playTapEffects({ x: event.nativeEvent.locationX, y: event.nativeEvent.locationY });
-
+  function handleBackgroundPress() {
     if (editModeRef.current) {
       setEditMode(false);
       return;
@@ -410,25 +372,6 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
         );
       })}
       </Animated.View>
-      {ripples.map((ripple) => {
-        const scale = ripple.anim.interpolate({ inputRange: [0, 1], outputRange: [0.2, 1] });
-        const opacity = ripple.anim.interpolate({ inputRange: [0, 1], outputRange: [0.45, 0] });
-        return (
-          <Animated.View
-            key={ripple.id}
-            pointerEvents="none"
-            style={[
-              styles.ripple,
-              {
-                left: ripple.x - RIPPLE_SIZE / 2,
-                top: ripple.y - RIPPLE_SIZE / 2,
-                opacity,
-                transform: [{ scale }],
-              },
-            ]}
-          />
-        );
-      })}
     </Pressable>
   );
 }
@@ -479,12 +422,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 1.5,
-  },
-  ripple: {
-    position: 'absolute',
-    width: RIPPLE_SIZE,
-    height: RIPPLE_SIZE,
-    borderRadius: RIPPLE_SIZE / 2,
-    backgroundColor: '#3fa9ff',
   },
 });
