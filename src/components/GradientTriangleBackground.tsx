@@ -1,20 +1,22 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { colors } from '../theme/colors';
 
-// Fixed, generously oversized regardless of device — comfortably larger
-// than the longest edge of any iPad in either orientation. The point is to
-// never need to reactively resize anything on rotation at all: every
-// previous attempt tied the background's size to window/onLayout
-// measurements that update on rotation, and something in that update path
-// (still not fully understood) left it clamped to roughly the shorter
-// screen edge after rotating. A static, oversized, centered layer sidesteps
-// the problem entirely — it never needs to change size, so there's nothing
-// to get stuck. Only its position/opacity animate (transforms), which is safe.
-const OVERSIZE = 1800;
-const OFFSET = -300;
+// Fixed, generously oversized regardless of device — computed once from the
+// window size at app startup (never re-read on rotation). The point is to
+// never reactively resize anything on rotation at all: every previous
+// attempt tied the background's size to window/onLayout measurements that
+// update on rotation, and something in that update path (still not fully
+// understood) left it clamped to roughly the shorter screen edge after
+// rotating. A static, oversized, centered layer sidesteps the problem
+// entirely — it never needs to change size, so there's nothing to get
+// stuck. Only its position/opacity animate (transforms), which is safe.
+const initialWindow = Dimensions.get('window');
+const LONGEST_EDGE = Math.max(initialWindow.width, initialWindow.height);
+const OVERSIZE = LONGEST_EDGE * 2;
+const OFFSET = -LONGEST_EDGE / 2;
 const STAR_COUNT = 36;
 
 function makeRand(seed: number) {
