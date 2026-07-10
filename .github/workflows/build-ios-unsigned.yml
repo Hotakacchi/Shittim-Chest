@@ -32,7 +32,10 @@ jobs:
         id: discover
         run: |
           WORKSPACE=$(ls -d ios/*.xcworkspace | head -n 1)
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | python3 -c "import json,sys; print(json.load(sys.stdin)['workspace']['schemes'][0])")
+          PROJECT=$(ls -d ios/*.xcodeproj | head -n 1)
+          SCHEME=$(basename "$PROJECT" .xcodeproj)
+          echo "All schemes in workspace:"
+          xcodebuild -workspace "$WORKSPACE" -list
           echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Workspace: $WORKSPACE / Scheme: $SCHEME"
@@ -53,9 +56,13 @@ jobs:
       - name: Package unsigned IPA
         run: |
           echo "Build products:"
-          find build/DerivedData/Build/Products -maxdepth 2
-          APP_PATH=$(find build/DerivedData/Build/Products -maxdepth 2 -name "*.app" -type d | head -n 1)
+          find build/DerivedData/Build/Products -maxdepth 3
+          APP_PATH=$(find build/DerivedData/Build/Products -maxdepth 3 -name "*.app" -type d | head -n 1)
           echo "Found app at: $APP_PATH"
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app bundle found - aborting"
+            exit 1
+          fi
           mkdir -p Payload
           cp -r "$APP_PATH" Payload/
           zip -r ShittimChest-unsigned.ipa Payload
