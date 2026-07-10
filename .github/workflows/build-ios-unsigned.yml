@@ -37,7 +37,7 @@ jobs:
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Workspace: $WORKSPACE / Scheme: $SCHEME"
 
-      - name: Archive (no code signing)
+      - name: Archive (ad hoc signing)
         run: |
           xcodebuild archive \
             -workspace "${{ steps.discover.outputs.workspace }}" \
@@ -46,11 +46,12 @@ jobs:
             -archivePath build/App.xcarchive \
             -sdk iphoneos \
             -destination "generic/platform=iOS" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            EXPANDED_CODE_SIGN_IDENTITY="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES
+            CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            DEVELOPMENT_TEAM=""
 
       - name: Package unsigned IPA
         run: |
