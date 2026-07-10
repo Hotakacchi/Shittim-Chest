@@ -8,8 +8,10 @@
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.hotakacchi.shittimchest",
       "infoPlist": {
-        "NSCameraUsageDescription": "写真を撮影するためにカメラを使用します。"
+        "NSCameraUsageDescription": "写真を撮影するためにカメラを使用します。",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "plugins": [
