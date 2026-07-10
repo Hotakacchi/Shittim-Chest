@@ -94,8 +94,12 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
   // Seed initial placement for the current orientation once the container is
   // measured and any saved layout has been loaded: restore a saved cell per
   // app for this orientation, or drop apps that have never been placed in it
-  // before (e.g. newly added apps) into the next free cell — centered as a
-  // row when the grid starts out empty.
+  // before (e.g. newly added apps) into the next free cell. When the grid
+  // starts out empty, apps are laid out as a centered block that wraps onto
+  // additional rows once there are more apps than columns — a single-row
+  // assumption would push overflow apps out to whatever the "find first free
+  // cell" fallback scan hits first (the top-left corner), which is exactly
+  // what happens in portrait once 6 apps no longer fit in one row.
   useEffect(() => {
     if (containerSize.width === 0 || containerSize.height === 0) return;
     if (savedPositionsBySize === null) return;
@@ -105,8 +109,10 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
       if (missing.length === 0) return prev;
 
       const occupied = new Set(Object.values(current).map((c) => `${c.col},${c.row}`));
-      const startCol = Math.max(0, Math.floor((columns - apps.length) / 2));
-      const midRow = Math.floor(rows / 2);
+      const appsPerRow = Math.max(1, Math.min(columns, apps.length));
+      const rowsNeeded = Math.ceil(apps.length / appsPerRow);
+      const startRow = Math.max(0, Math.floor((rows - rowsNeeded) / 2));
+      const startCol = Math.max(0, Math.floor((columns - appsPerRow) / 2));
 
       function findFreeCell(preferred: Cell): Cell {
         if (!occupied.has(`${preferred.col},${preferred.row}`)) return preferred;
@@ -122,7 +128,12 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
       missing.forEach((app) => {
         const index = apps.indexOf(app);
         const saved = savedPositionsBySize[orientation][app.key];
-        const preferred = saved ? clampCell(saved) : clampCell({ col: startCol + index, row: midRow });
+        const preferred = saved
+          ? clampCell(saved)
+          : clampCell({
+              col: startCol + (index % appsPerRow),
+              row: startRow + Math.floor(index / appsPerRow),
+            });
         const cell = findFreeCell(preferred);
         occupied.add(`${cell.col},${cell.row}`);
         nextForOrientation[app.key] = cell;
@@ -280,9 +291,19 @@ export function HomeAppGrid({ apps, onLaunch }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apps, onLaunch, columns, rows, offsetX, offsetY, orientation]);
 
+  // Rotation can fire onLayout several times in quick succession as the
+  // frame animates through intermediate sizes. Debounce so only the size it
+  // settles on drives seeding/persisting icon positions — acting on a
+  // transient mid-rotation size would seed apps into the wrong cell and that
+  // cell then gets persisted, leaving icons stuck off-grid after the layout
+  // itself has corrected.
+  const layoutDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-    setContainerSize({ width, height });
+    if (layoutDebounceRef.current) clearTimeout(layoutDebounceRef.current);
+    layoutDebounceRef.current = setTimeout(() => {
+      setContainerSize({ width, height });
+    }, 150);
   };
 
   return (
