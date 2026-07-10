@@ -31,7 +31,7 @@ jobs:
       - name: Discover workspace and scheme
         id: discover
         run: |
-          WORKSPACE=$(ls ios/*.xcworkspace | head -n 1)
+          WORKSPACE=$(ls -d ios/*.xcworkspace | head -n 1)
           SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list -json | python3 -c "import json,sys; print(json.load(sys.stdin)['workspace']['schemes'][0])")
           echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
