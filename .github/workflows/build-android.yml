@@ -32,6 +32,14 @@ jobs:
           # doesn't do by default.
           sed -i '/release {/a\            signingConfig signingConfigs.debug' android/app/build.gradle
 
+      - name: Raise Gradle JVM memory limits
+        run: |
+          # The default 512MB metaspace isn't enough for expo-updates'
+          # Kotlin annotation processing (kspReleaseKotlin) in a release
+          # build, which OOMs and leaves the build hanging instead of
+          # failing cleanly.
+          echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> android/gradle.properties
+
       - name: Build release APK
         timeout-minutes: 15
         run: |
