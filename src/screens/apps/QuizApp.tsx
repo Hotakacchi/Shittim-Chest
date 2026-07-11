@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
+import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { loadQuizStats, recordAnswer, QuizStats } from '../../lib/quizStats';
 import actorData from '../../data/quiz/actor.json';
 import haloData from '../../data/quiz/halo.json';
@@ -10,6 +11,11 @@ import miyoziData from '../../data/quiz/miyozi.json';
 import birthdayData from '../../data/quiz/birthday.json';
 import puData from '../../data/quiz/pu.json';
 import statusData from '../../data/quiz/status.json';
+
+// actor/halo/memory reference the older quiz-specific asset set; miyozi and
+// birthday were regenerated from the character roster's own portraits — the
+// two image maps use disjoint filename schemes, so they merge cleanly.
+const ALL_IMAGES: Record<string, number> = { ...QUIZ_IMAGES, ...CHARACTER_IMAGES };
 
 type ChoiceQuestion = { mode: 'choice'; prompt: string; answer: string; image?: string };
 type TextQuestion = { mode: 'text'; prompt: string; answers: string[]; image?: string };
@@ -344,7 +350,7 @@ function QuizRound({
 
       {'image' in current.question && current.question.image && (
         <Image
-          source={QUIZ_IMAGES[current.question.image]}
+          source={ALL_IMAGES[current.question.image]}
           style={category.imageAspect === 'wide' ? styles.quizImageWide : styles.quizImageSquare}
           resizeMode="contain"
         />
