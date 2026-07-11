@@ -300,10 +300,10 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
         />
       )}
       {current.question.mode === 'text' && (
-        <TextAnswer question={current.question} submitted={textSubmitted} onSubmit={handleText} />
+        <TextAnswer key={index} question={current.question} submitted={textSubmitted} onSubmit={handleText} />
       )}
       {current.question.mode === 'date' && (
-        <DateAnswer question={current.question} submitted={dateSubmitted} onSubmit={handleDate} />
+        <DateAnswer key={index} question={current.question} submitted={dateSubmitted} onSubmit={handleDate} />
       )}
 
       {answered && (
