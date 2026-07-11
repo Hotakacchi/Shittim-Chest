@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
 import actorData from '../../data/quiz/actor.json';
@@ -10,27 +10,37 @@ import birthdayData from '../../data/quiz/birthday.json';
 import puData from '../../data/quiz/pu.json';
 import statusData from '../../data/quiz/status.json';
 
-type Question = { prompt: string; answer: string; image?: string };
+type ChoiceQuestion = { mode: 'choice'; prompt: string; answer: string; image?: string };
+type TextQuestion = { mode: 'text'; prompt: string; answers: string[]; image?: string };
+type DateQuestion = { mode: 'date'; prompt: string; month: number; day: number; image?: string };
+type Question = ChoiceQuestion | TextQuestion | DateQuestion;
 
 type Category = {
   key: string;
   label: string;
   description: string;
   data: Question[];
+  imageAspect: 'square' | 'wide';
 };
 
+function withMode<T extends { prompt: string }>(mode: Question['mode'], items: T[]): (T & { mode: Question['mode'] })[] {
+  return items.map((item) => ({ ...item, mode }));
+}
+
 const CATEGORIES: Category[] = [
-  { key: 'actor', label: '声優当て', description: '顔グラからCV担当声優を当てる', data: actorData },
-  { key: 'halo', label: 'ヘイロー当て', description: 'ヘイローの形からキャラを当てる', data: haloData },
-  { key: 'memory', label: 'メモロビ当て', description: 'メモリアルロビー画像からキャラを当てる', data: memoryData },
-  { key: 'miyozi', label: '苗字当て', description: 'キャラクターの名字を当てる', data: miyoziData },
-  { key: 'birthday', label: '誕生日当て', description: 'キャラクターの誕生日を当てる', data: birthdayData },
-  { key: 'pu', label: 'セリフ当て', description: 'ボイスの決め台詞から誰か当てる', data: puData },
-  { key: 'status', label: 'ステータス当て', description: 'ステータス画面の一言から誰か当てる', data: statusData },
+  { key: 'actor', label: '声優クイズ', description: '顔グラからCV担当声優を当てる', data: withMode('choice', actorData) as Question[], imageAspect: 'square' },
+  { key: 'halo', label: 'ヘイロークイズ', description: 'ヘイローの形からキャラを当てる', data: withMode('choice', haloData) as Question[], imageAspect: 'square' },
+  { key: 'memory', label: 'メモロビクイズ', description: 'メモリアルロビー画像からキャラを当てる', data: withMode('choice', memoryData) as Question[], imageAspect: 'wide' },
+  { key: 'miyozi', label: '苗字クイズ', description: 'キャラクターの名字を入力して当てる', data: withMode('text', miyoziData) as Question[], imageAspect: 'square' },
+  { key: 'birthday', label: '誕生日クイズ', description: '月日を選んでキャラクターの誕生日を当てる', data: withMode('date', birthdayData) as Question[], imageAspect: 'square' },
+  { key: 'pu', label: 'セリフクイズ', description: 'ボイスの決め台詞から誰か当てる', data: withMode('choice', puData) as Question[], imageAspect: 'square' },
+  { key: 'status', label: 'ステータスクイズ', description: 'ステータス画面の一言から誰か当てる', data: withMode('choice', statusData) as Question[], imageAspect: 'square' },
 ];
 
 const ROUND_SIZE = 10;
 const CHOICE_COUNT = 4;
+const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
+const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -43,8 +53,12 @@ function shuffle<T>(arr: T[]): T[] {
 
 function buildRound(category: Category) {
   const pool = shuffle(category.data).slice(0, Math.min(ROUND_SIZE, category.data.length));
-  const uniqueAnswers = Array.from(new Set(category.data.map((q) => q.answer)));
+  const uniqueAnswers =
+    category.data[0]?.mode === 'choice'
+      ? Array.from(new Set((category.data as ChoiceQuestion[]).map((q) => q.answer)))
+      : [];
   return pool.map((q) => {
+    if (q.mode !== 'choice') return { question: q, choices: [] as string[] };
     const distractors = shuffle(uniqueAnswers.filter((a) => a !== q.answer)).slice(0, CHOICE_COUNT - 1);
     const choices = shuffle([q.answer, ...distractors]);
     return { question: q, choices };
@@ -65,26 +79,174 @@ function CategoryPicker({ onSelect }: { onSelect: (category: Category) => void }
   );
 }
 
+function ChoiceAnswer({
+  question,
+  choices,
+  selected,
+  onSelect,
+}: {
+  question: ChoiceQuestion;
+  choices: string[];
+  selected: string | null;
+  onSelect: (choice: string) => void;
+}) {
+  return (
+    <View style={styles.choices}>
+      {choices.map((choice) => {
+        const isCorrect = choice === question.answer;
+        const isSelected = choice === selected;
+        const showResult = selected !== null;
+        return (
+          <Pressable
+            key={choice}
+            style={[
+              styles.choiceButton,
+              showResult && isCorrect && styles.choiceCorrect,
+              showResult && isSelected && !isCorrect && styles.choiceWrong,
+            ]}
+            onPress={() => onSelect(choice)}
+            disabled={selected !== null}
+          >
+            <Text style={styles.choiceLabel}>{choice}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+function TextAnswer({
+  question,
+  submitted,
+  onSubmit,
+}: {
+  question: TextQuestion;
+  submitted: string | null;
+  onSubmit: (value: string) => void;
+}) {
+  const [draft, setDraft] = useState('');
+  const isCorrect = submitted !== null && question.answers.includes(submitted.trim());
+
+  return (
+    <View style={styles.textAnswerBlock}>
+      <TextInput
+        value={draft}
+        onChangeText={setDraft}
+        editable={submitted === null}
+        placeholder="名字を入力…"
+        placeholderTextColor={colors.inkDim}
+        style={[styles.textInput, submitted !== null && (isCorrect ? styles.choiceCorrect : styles.choiceWrong)]}
+        onSubmitEditing={() => draft.trim() && onSubmit(draft)}
+        returnKeyType="done"
+      />
+      {submitted === null ? (
+        <Pressable style={styles.primaryButton} onPress={() => draft.trim() && onSubmit(draft)}>
+          <Text style={styles.primaryButtonLabel}>回答する</Text>
+        </Pressable>
+      ) : (
+        <Text style={styles.revealText}>
+          {isCorrect ? '正解！' : `不正解。正解は「${question.answers[0]}」`}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+function DateAnswer({
+  question,
+  submitted,
+  onSubmit,
+}: {
+  question: DateQuestion;
+  submitted: { month: number; day: number } | null;
+  onSubmit: (value: { month: number; day: number }) => void;
+}) {
+  const [month, setMonth] = useState<number | null>(null);
+  const [day, setDay] = useState<number | null>(null);
+  const isCorrect = submitted !== null && submitted.month === question.month && submitted.day === question.day;
+
+  return (
+    <View style={styles.dateAnswerBlock}>
+      <Text style={styles.pickerLabel}>月</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pickerRow}>
+        {MONTHS.map((m) => (
+          <Pressable
+            key={m}
+            style={[styles.pickerCell, month === m && styles.pickerCellActive]}
+            onPress={() => submitted === null && setMonth(m)}
+            disabled={submitted !== null}
+          >
+            <Text style={[styles.pickerCellLabel, month === m && styles.pickerCellLabelActive]}>{m}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      <Text style={styles.pickerLabel}>日</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pickerRow}>
+        {DAYS.map((d) => (
+          <Pressable
+            key={d}
+            style={[styles.pickerCell, day === d && styles.pickerCellActive]}
+            onPress={() => submitted === null && setDay(d)}
+            disabled={submitted !== null}
+          >
+            <Text style={[styles.pickerCellLabel, day === d && styles.pickerCellLabelActive]}>{d}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {submitted === null ? (
+        <Pressable
+          style={[styles.primaryButton, (!month || !day) && styles.primaryButtonDisabled]}
+          onPress={() => month && day && onSubmit({ month, day })}
+          disabled={!month || !day}
+        >
+          <Text style={styles.primaryButtonLabel}>回答する</Text>
+        </Pressable>
+      ) : (
+        <Text style={styles.revealText}>
+          {isCorrect ? '正解！' : `不正解。正解は${question.month}月${question.day}日`}
+        </Text>
+      )}
+    </View>
+  );
+}
+
 function QuizRound({ category, onExit }: { category: Category; onExit: () => void }) {
   const round = useMemo(() => buildRound(category), [category]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [choiceSelected, setChoiceSelected] = useState<string | null>(null);
+  const [textSubmitted, setTextSubmitted] = useState<string | null>(null);
+  const [dateSubmitted, setDateSubmitted] = useState<{ month: number; day: number } | null>(null);
 
   const current = round[index];
   const finished = index >= round.length;
-
-  function selectChoice(choice: string) {
-    if (selected) return;
-    setSelected(choice);
-    if (choice === current.question.answer) {
-      setScore((s) => s + 1);
-    }
-  }
+  const answered = choiceSelected !== null || textSubmitted !== null || dateSubmitted !== null;
 
   function next() {
-    setSelected(null);
+    setChoiceSelected(null);
+    setTextSubmitted(null);
+    setDateSubmitted(null);
     setIndex((i) => i + 1);
+  }
+
+  function handleChoice(choice: string) {
+    if (current.question.mode !== 'choice' || choiceSelected !== null) return;
+    setChoiceSelected(choice);
+    if (choice === current.question.answer) setScore((s) => s + 1);
+  }
+
+  function handleText(value: string) {
+    if (current.question.mode !== 'text') return;
+    setTextSubmitted(value);
+    if (current.question.answers.includes(value.trim())) setScore((s) => s + 1);
+  }
+
+  function handleDate(value: { month: number; day: number }) {
+    if (current.question.mode !== 'date') return;
+    setDateSubmitted(value);
+    if (value.month === current.question.month && value.day === current.question.day) setScore((s) => s + 1);
   }
 
   if (finished) {
@@ -94,7 +256,16 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
         <Text style={styles.resultScore}>
           {score} / {round.length} 問正解
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => { setIndex(0); setScore(0); setSelected(null); }}>
+        <Pressable
+          style={styles.primaryButton}
+          onPress={() => {
+            setIndex(0);
+            setScore(0);
+            setChoiceSelected(null);
+            setTextSubmitted(null);
+            setDateSubmitted(null);
+          }}
+        >
           <Text style={styles.primaryButtonLabel}>もう一度</Text>
         </Pressable>
         <Pressable style={styles.secondaryButton} onPress={onExit}>
@@ -105,47 +276,44 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
   }
 
   return (
-    <View style={styles.quizContainer}>
+    <ScrollView contentContainerStyle={styles.quizContainer}>
       <Text style={styles.progress}>
         {index + 1} / {round.length}　正解数: {score}
       </Text>
 
-      {current.question.image && (
-        <Image source={QUIZ_IMAGES[current.question.image]} style={styles.quizImage} resizeMode="contain" />
+      {'image' in current.question && current.question.image && (
+        <Image
+          source={QUIZ_IMAGES[current.question.image]}
+          style={category.imageAspect === 'wide' ? styles.quizImageWide : styles.quizImageSquare}
+          resizeMode="contain"
+        />
       )}
 
       <Text style={styles.prompt}>{current.question.prompt}</Text>
 
-      <View style={styles.choices}>
-        {current.choices.map((choice) => {
-          const isCorrect = choice === current.question.answer;
-          const isSelected = choice === selected;
-          const showResult = selected !== null;
-          return (
-            <Pressable
-              key={choice}
-              style={[
-                styles.choiceButton,
-                showResult && isCorrect && styles.choiceCorrect,
-                showResult && isSelected && !isCorrect && styles.choiceWrong,
-              ]}
-              onPress={() => selectChoice(choice)}
-              disabled={selected !== null}
-            >
-              <Text style={styles.choiceLabel}>{choice}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      {current.question.mode === 'choice' && (
+        <ChoiceAnswer
+          question={current.question}
+          choices={current.choices}
+          selected={choiceSelected}
+          onSelect={handleChoice}
+        />
+      )}
+      {current.question.mode === 'text' && (
+        <TextAnswer question={current.question} submitted={textSubmitted} onSubmit={handleText} />
+      )}
+      {current.question.mode === 'date' && (
+        <DateAnswer question={current.question} submitted={dateSubmitted} onSubmit={handleDate} />
+      )}
 
-      {selected !== null && (
+      {answered && (
         <Pressable style={styles.primaryButton} onPress={next}>
           <Text style={styles.primaryButtonLabel}>
             {index + 1 === round.length ? '結果を見る' : '次の問題へ'}
           </Text>
         </Pressable>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -187,7 +355,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   quizContainer: {
-    flex: 1,
+    flexGrow: 1,
     padding: 24,
     alignItems: 'center',
     gap: 16,
@@ -197,9 +365,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 1,
   },
-  quizImage: {
-    width: 220,
-    height: 220,
+  quizImageSquare: {
+    width: 280,
+    height: 280,
+    borderRadius: 12,
+  },
+  quizImageWide: {
+    width: 420,
+    height: 189,
     borderRadius: 12,
   },
   prompt: {
@@ -235,11 +408,76 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+  textAnswerBlock: {
+    width: '100%',
+    maxWidth: 420,
+    gap: 12,
+    alignItems: 'center',
+  },
+  textInput: {
+    width: '100%',
+    backgroundColor: colors.panelOnLight,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    color: colors.ink,
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  dateAnswerBlock: {
+    width: '100%',
+    maxWidth: 480,
+    gap: 8,
+    alignItems: 'center',
+  },
+  pickerLabel: {
+    color: colors.inkDim,
+    fontSize: 12,
+    letterSpacing: 1,
+    alignSelf: 'flex-start',
+  },
+  pickerRow: {
+    width: '100%',
+    maxHeight: 52,
+  },
+  pickerCell: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: colors.panelOnLight,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  pickerCellActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  pickerCellLabel: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  pickerCellLabelActive: {
+    color: '#ffffff',
+  },
+  revealText: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: '600',
+  },
   primaryButton: {
     backgroundColor: colors.accent,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 28,
+  },
+  primaryButtonDisabled: {
+    opacity: 0.4,
   },
   primaryButtonLabel: {
     color: '#ffffff',

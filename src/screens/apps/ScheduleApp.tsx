@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
-import { WEEKDAYS_JA, toDateKey } from '../../lib/dateUtils';
+import { WEEKDAYS_JA, getMonthMatrix, toDateKey } from '../../lib/dateUtils';
 import { MonthCalendar } from '../../components/MonthCalendar';
+import birthdayData from '../../data/quiz/birthday.json';
 
 type EventItem = {
   id: string;
@@ -12,6 +13,20 @@ type EventItem = {
 };
 
 type EventsByDate = Record<string, EventItem[]>;
+
+function monthDayKey(month: number, day: number): string {
+  return `${month}-${day}`;
+}
+
+// Character birthdays recur every year, so they're looked up by month/day
+// rather than stored as dated events — no need to reseed them each year.
+const BIRTHDAYS_BY_MONTH_DAY: Record<string, string[]> = {};
+for (const entry of birthdayData) {
+  const match = entry.prompt.match(/「(.+?)」/);
+  if (!match) continue;
+  const key = monthDayKey(entry.month, entry.day);
+  (BIRTHDAYS_BY_MONTH_DAY[key] ??= []).push(match[1]);
+}
 
 function formatSelectedDate(date: Date): string {
   const m = date.getMonth() + 1;
@@ -50,9 +65,25 @@ export function ScheduleApp() {
 
   const selectedKey = toDateKey(selectedDate);
   const selectedEvents = eventsByDate[selectedKey] ?? [];
-  const markedDateKeys = new Set(
-    Object.keys(eventsByDate).filter((key) => (eventsByDate[key]?.length ?? 0) > 0),
-  );
+  const selectedBirthdays = BIRTHDAYS_BY_MONTH_DAY[monthDayKey(selectedDate.getMonth() + 1, selectedDate.getDate())] ?? [];
+
+  const markedDateKeys = useMemo(() => {
+    const keys = new Set(
+      Object.keys(eventsByDate).filter((key) => (eventsByDate[key]?.length ?? 0) > 0),
+    );
+    // The calendar grid can show up to 6 weeks, spilling into the adjacent
+    // months — walk that whole visible range so birthday dots don't stop
+    // short at the edges of viewMonth.
+    for (const week of getMonthMatrix(viewMonth.getFullYear(), viewMonth.getMonth())) {
+      for (const date of week) {
+        const key = monthDayKey(date.getMonth() + 1, date.getDate());
+        if (BIRTHDAYS_BY_MONTH_DAY[key]) {
+          keys.add(toDateKey(date));
+        }
+      }
+    }
+    return keys;
+  }, [eventsByDate, viewMonth]);
 
   function addEvent() {
     const title = draft.trim();
@@ -92,6 +123,16 @@ export function ScheduleApp() {
       <View style={styles.divider} />
 
       <Text style={styles.selectedLabel}>{formatSelectedDate(selectedDate)}の予定</Text>
+
+      {selectedBirthdays.length > 0 && (
+        <View style={styles.birthdayRow}>
+          {selectedBirthdays.map((name) => (
+            <Text key={name} style={styles.birthdayText}>
+              🎂 {name}の誕生日
+            </Text>
+          ))}
+        </View>
+      )}
 
       <View style={styles.inputRow}>
         <TextInput
@@ -143,6 +184,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     marginBottom: 10,
+  },
+  birthdayRow: {
+    gap: 6,
+    marginBottom: 12,
+  },
+  birthdayText: {
+    color: colors.ink,
+    fontSize: 13,
+    fontWeight: '600',
+    backgroundColor: 'rgba(255, 207, 92, 0.25)',
+    borderWidth: 1,
+    borderColor: colors.warning,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   inputRow: {
     flexDirection: 'row',

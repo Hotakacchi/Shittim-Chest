@@ -1,502 +1,752 @@
 [
   {
     "prompt": "「アイリ」の誕生日は？",
-    "answer": "1月30日"
+    "month": 1,
+    "day": 30,
+    "image": "airi.webp"
   },
   {
     "prompt": "「アオイ」の誕生日は？",
-    "answer": "7月19日"
+    "month": 7,
+    "day": 19,
+    "image": "aoi.webp"
   },
   {
     "prompt": "「アカネ」の誕生日は？",
-    "answer": "4月1日"
+    "month": 4,
+    "day": 1,
+    "image": "akane.webp"
   },
   {
     "prompt": "「アカリ」の誕生日は？",
-    "answer": "12月9日"
+    "month": 12,
+    "day": 9,
+    "image": "akari.webp"
   },
   {
     "prompt": "「アコ」の誕生日は？",
-    "answer": "12月22日"
+    "month": 12,
+    "day": 22,
+    "image": "ako.webp"
   },
   {
     "prompt": "「アスナ」の誕生日は？",
-    "answer": "3月24日"
+    "month": 3,
+    "day": 24,
+    "image": "asuna.webp"
   },
   {
     "prompt": "「アズサ」の誕生日は？",
-    "answer": "12月26日"
+    "month": 12,
+    "day": 26,
+    "image": "azusa.webp"
   },
   {
     "prompt": "「アツコ」の誕生日は？",
-    "answer": "1月20日"
+    "month": 1,
+    "day": 20,
+    "image": "atuko.webp"
   },
   {
     "prompt": "「アヤネ」の誕生日は？",
-    "answer": "11月12日"
+    "month": 11,
+    "day": 12,
+    "image": "ayane.webp"
   },
   {
     "prompt": "「アリス」の誕生日は？",
-    "answer": "3月25日"
+    "month": 3,
+    "day": 25,
+    "image": "arisu.webp"
   },
   {
     "prompt": "「アル」の誕生日は？",
-    "answer": "3月12日"
+    "month": 3,
+    "day": 12,
+    "image": "aru.webp"
   },
   {
     "prompt": "「イオリ」の誕生日は？",
-    "answer": "11月8日"
+    "month": 11,
+    "day": 8,
+    "image": "iori.webp"
   },
   {
     "prompt": "「イズナ」の誕生日は？",
-    "answer": "12月16日"
+    "month": 12,
+    "day": 16,
+    "image": "izuna.webp"
   },
   {
     "prompt": "「イズミ」の誕生日は？",
-    "answer": "5月11日"
+    "month": 5,
+    "day": 11,
+    "image": "izumi.webp"
   },
   {
     "prompt": "「イチカ」の誕生日は？",
-    "answer": "11月11日"
+    "month": 11,
+    "day": 11,
+    "image": "itika.webp"
   },
   {
     "prompt": "「イブキ」の誕生日は？",
-    "answer": "4月14日"
+    "month": 4,
+    "day": 14,
+    "image": "ibuki.webp"
   },
   {
     "prompt": "「イロハ」の誕生日は？",
-    "answer": "11月16日"
+    "month": 11,
+    "day": 16,
+    "image": "iroha.webp"
   },
   {
     "prompt": "「ウイ」の誕生日は？",
-    "answer": "4月23日"
+    "month": 4,
+    "day": 23,
+    "image": "ui.webp"
   },
   {
     "prompt": "「ウタハ」の誕生日は？",
-    "answer": "11月13日"
+    "month": 11,
+    "day": 13,
+    "image": "utaha.webp"
   },
   {
     "prompt": "「ウミカ」の誕生日は？",
-    "answer": "7月1日"
+    "month": 7,
+    "day": 1,
+    "image": "umika.webp"
   },
   {
     "prompt": "「エイミ」の誕生日は？",
-    "answer": "5月1日"
+    "month": 5,
+    "day": 1,
+    "image": "eimi.webp"
   },
   {
     "prompt": "「カエデ」の誕生日は？",
-    "answer": "7月9日"
+    "month": 7,
+    "day": 9,
+    "image": "kaede.webp"
   },
   {
     "prompt": "「カズサ」の誕生日は？",
-    "answer": "8月5日"
+    "month": 8,
+    "day": 5,
+    "image": "kazusa.webp"
   },
   {
     "prompt": "「カホ」の誕生日は？",
-    "answer": "10月9日"
+    "month": 10,
+    "day": 9,
+    "image": "kaho.webp"
   },
   {
     "prompt": "「カヨコ」の誕生日は？",
-    "answer": "3月17日"
+    "month": 3,
+    "day": 17,
+    "image": "kayoko.webp"
   },
   {
     "prompt": "「カスミ」の誕生日は？",
-    "answer": "5月24日"
+    "month": 5,
+    "day": 24,
+    "image": "kasumi.webp"
   },
   {
     "prompt": "「カリン」の誕生日は？",
-    "answer": "2月2日"
+    "month": 2,
+    "day": 2,
+    "image": "karin.webp"
   },
   {
     "prompt": "「カンナ」の誕生日は？",
-    "answer": "9月7日"
+    "month": 9,
+    "day": 7,
+    "image": "kanna.webp"
   },
   {
     "prompt": "「キキョウ」の誕生日は？",
-    "answer": "8月8日"
+    "month": 8,
+    "day": 8,
+    "image": "kikyou.webp"
   },
   {
     "prompt": "「キサキ」の誕生日は？",
-    "answer": "2月19日"
+    "month": 2,
+    "day": 19,
+    "image": "kisaki.webp"
   },
   {
     "prompt": "「キララ」の誕生日は？",
-    "answer": "2月24日"
+    "month": 2,
+    "day": 24,
+    "image": "kirara.webp"
   },
   {
     "prompt": "「キリノ」の誕生日は？",
-    "answer": "10月22日"
+    "month": 10,
+    "day": 22,
+    "image": "kirino.webp"
   },
   {
     "prompt": "「ココナ」の誕生日は？",
-    "answer": "6月1日"
+    "month": 6,
+    "day": 1,
+    "image": "kokona.webp"
   },
   {
     "prompt": "「コタマ」の誕生日は？",
-    "answer": "1月5日"
+    "month": 1,
+    "day": 5,
+    "image": "kotama.webp"
   },
   {
     "prompt": "「コトリ」の誕生日は？",
-    "answer": "12月31日"
+    "month": 12,
+    "day": 31,
+    "image": "kotori.webp"
   },
   {
     "prompt": "「コハル」の誕生日は？",
-    "answer": "4月16日"
+    "month": 4,
+    "day": 16,
+    "image": "koharu.webp"
   },
   {
     "prompt": "「コユキ」の誕生日は？",
-    "answer": "2月14日"
+    "month": 2,
+    "day": 14,
+    "image": "koyuki.webp"
   },
   {
     "prompt": "「サオリ」の誕生日は？",
-    "answer": "9月3日"
+    "month": 9,
+    "day": 3,
+    "image": "saori.webp"
   },
   {
     "prompt": "「サキ」の誕生日は？",
-    "answer": "4月9日"
+    "month": 4,
+    "day": 9,
+    "image": "saki.webp"
   },
   {
     "prompt": "「サクラコ」の誕生日は？",
-    "answer": "10月4日"
+    "month": 10,
+    "day": 4,
+    "image": "sakurako.webp"
   },
   {
     "prompt": "「サツキ」の誕生日は？",
-    "answer": "4月10日"
+    "month": 4,
+    "day": 10,
+    "image": "satuki.webp"
   },
   {
     "prompt": "「サヤ」の誕生日は？",
-    "answer": "1月3日"
+    "month": 1,
+    "day": 3,
+    "image": "saya.webp"
   },
   {
     "prompt": "「シグレ」の誕生日は？",
-    "answer": "1月22日"
+    "month": 1,
+    "day": 22,
+    "image": "sigure.webp"
   },
   {
     "prompt": "「シズコ」の誕生日は？",
-    "answer": "7月7日"
+    "month": 7,
+    "day": 7,
+    "image": "sizuko.webp"
   },
   {
     "prompt": "「シミコ」の誕生日は？",
-    "answer": "11月30日"
+    "month": 11,
+    "day": 30,
+    "image": "simiko.webp"
   },
   {
     "prompt": "「シュン」の誕生日は？",
-    "answer": "2月5日"
+    "month": 2,
+    "day": 5,
+    "image": "syun.webp"
   },
   {
     "prompt": "「シロコ」の誕生日は？",
-    "answer": "5月16日"
+    "month": 5,
+    "day": 16,
+    "image": "siroko.webp"
   },
   {
     "prompt": "「ジュリ」の誕生日は？",
-    "answer": "10月20日"
+    "month": 10,
+    "day": 20,
+    "image": "zyuri.webp"
   },
   {
     "prompt": "「ジュンコ」の誕生日は？",
-    "answer": "12月27日"
+    "month": 12,
+    "day": 27,
+    "image": "zyunko.webp"
   },
   {
     "prompt": "「スズミ」の誕生日は？",
-    "answer": "8月31日"
+    "month": 8,
+    "day": 31,
+    "image": "suzumi.webp"
   },
   {
     "prompt": "「スミレ」の誕生日は？",
-    "answer": "8月20日"
+    "month": 8,
+    "day": 20,
+    "image": "sumire.webp"
   },
   {
     "prompt": "「セイア」の誕生日は？",
-    "answer": "9月29日"
+    "month": 9,
+    "day": 29,
+    "image": "seia.webp"
   },
   {
     "prompt": "「セナ」の誕生日は？",
-    "answer": "4月7日"
+    "month": 4,
+    "day": 7,
+    "image": "sena.webp"
   },
   {
     "prompt": "「セリカ」の誕生日は？",
-    "answer": "6月25日"
+    "month": 6,
+    "day": 25,
+    "image": "serika.webp"
   },
   {
     "prompt": "「セリナ」の誕生日は？",
-    "answer": "1月6日"
+    "month": 1,
+    "day": 6,
+    "image": "serina.webp"
   },
   {
     "prompt": "「チアキ」の誕生日は？",
-    "answer": "9月22日"
+    "month": 9,
+    "day": 22,
+    "image": "tiaki.webp"
   },
   {
     "prompt": "「チェリノ」の誕生日は？",
-    "answer": "10月27日"
+    "month": 10,
+    "day": 27,
+    "image": "tyerino.webp"
   },
   {
     "prompt": "「チセ」の誕生日は？",
-    "answer": "7月13日"
+    "month": 7,
+    "day": 13,
+    "image": "tise.webp"
   },
   {
     "prompt": "「チナツ」の誕生日は？",
-    "answer": "8月22日"
+    "month": 8,
+    "day": 22,
+    "image": "tinatu.webp"
   },
   {
     "prompt": "「チヒロ」の誕生日は？",
-    "answer": "4月26日"
+    "month": 4,
+    "day": 26,
+    "image": "tihiro.webp"
   },
   {
     "prompt": "「ツクヨ」の誕生日は？",
-    "answer": "4月5日"
+    "month": 4,
+    "day": 5,
+    "image": "tukuyo.webp"
   },
   {
     "prompt": "「ツバキ」の誕生日は？",
-    "answer": "2月3日"
+    "month": 2,
+    "day": 3,
+    "image": "tubaki.webp"
   },
   {
     "prompt": "「ツルギ」の誕生日は？",
-    "answer": "6月24日"
+    "month": 6,
+    "day": 24,
+    "image": "turugi.webp"
   },
   {
     "prompt": "「トキ」の誕生日は？",
-    "answer": "8月16日"
+    "month": 8,
+    "day": 16,
+    "image": "toki.webp"
   },
   {
     "prompt": "「トモエ」の誕生日は？",
-    "answer": "11月10日"
+    "month": 11,
+    "day": 10,
+    "image": "tomoe.webp"
   },
   {
     "prompt": "「ナギサ」の誕生日は？",
-    "answer": "7月4日"
+    "month": 7,
+    "day": 4,
+    "image": "nagisa.webp"
   },
   {
     "prompt": "「ナグサ」の誕生日は？",
-    "answer": "12月7日"
+    "month": 12,
+    "day": 7,
+    "image": "nagusa.webp"
   },
   {
     "prompt": "「ナツ」の誕生日は？",
-    "answer": "12月4日"
+    "month": 12,
+    "day": 4,
+    "image": "natu.webp"
   },
   {
     "prompt": "「ニア」の誕生日は？",
-    "answer": "1月1日"
+    "month": 1,
+    "day": 1,
+    "image": "niya.webp"
   },
   {
     "prompt": "「ネル」の誕生日は？",
-    "answer": "8月17日"
+    "month": 8,
+    "day": 17,
+    "image": "neru.webp"
   },
   {
     "prompt": "「ノア」の誕生日は？",
-    "answer": "4月13日"
+    "month": 4,
+    "day": 13,
+    "image": "noa.webp"
   },
   {
     "prompt": "「ノゾミ」の誕生日は？",
-    "answer": "6月14日"
+    "month": 6,
+    "day": 14,
+    "image": "nozomi.webp"
   },
   {
     "prompt": "「ノドカ」の誕生日は？",
-    "answer": "2月20日"
+    "month": 2,
+    "day": 20,
+    "image": "nodoka.webp"
   },
   {
     "prompt": "「ノノミ」の誕生日は？",
-    "answer": "9月1日"
+    "month": 9,
+    "day": 1,
+    "image": "nonomi.webp"
   },
   {
     "prompt": "「ハスミ」の誕生日は？",
-    "answer": "12月12日"
+    "month": 12,
+    "day": 12,
+    "image": "hasumi.webp"
   },
   {
     "prompt": "「ハナエ」の誕生日は？",
-    "answer": "5月12日"
+    "month": 5,
+    "day": 12,
+    "image": "hanae.webp"
   },
   {
     "prompt": "「ハナコ」の誕生日は？",
-    "answer": "1月3日"
+    "month": 1,
+    "day": 3,
+    "image": "hanako.webp"
   },
   {
     "prompt": "「ハルカ」の誕生日は？",
-    "answer": "5月13日"
+    "month": 5,
+    "day": 13,
+    "image": "haruka.webp"
   },
   {
     "prompt": "「ハルナ」の誕生日は？",
-    "answer": "3月1日"
+    "month": 3,
+    "day": 1,
+    "image": "haruna.webp"
   },
   {
     "prompt": "「ハレ」の誕生日は？",
-    "answer": "4月19日"
+    "month": 4,
+    "day": 19,
+    "image": "hare.webp"
   },
   {
     "prompt": "「ヒカリ」の誕生日は？",
-    "answer": "6月14日"
+    "month": 6,
+    "day": 14,
+    "image": "hikari.webp"
   },
   {
     "prompt": "「ヒナ」の誕生日は？",
-    "answer": "2月19日"
+    "month": 2,
+    "day": 19,
+    "image": "hina.webp"
   },
   {
     "prompt": "「ヒナタ」の誕生日は？",
-    "answer": "5月17日"
+    "month": 5,
+    "day": 17,
+    "image": "hinata.webp"
   },
   {
     "prompt": "「ヒビキ」の誕生日は？",
-    "answer": "4月2日"
+    "month": 4,
+    "day": 2,
+    "image": "hibiki.webp"
   },
   {
     "prompt": "「ヒフミ」の誕生日は？",
-    "answer": "11月27日"
+    "month": 11,
+    "day": 27,
+    "image": "hifumi.webp"
   },
   {
     "prompt": "「ヒマリ」の誕生日は？",
-    "answer": "12月10日"
+    "month": 12,
+    "day": 10,
+    "image": "himari.webp"
   },
   {
     "prompt": "「ヒヨリ」の誕生日は？",
-    "answer": "1月8日"
+    "month": 1,
+    "day": 8,
+    "image": "hiyori.webp"
   },
   {
     "prompt": "「フィーナ」の誕生日は？",
-    "answer": "11月3日"
+    "month": 11,
+    "day": 3,
+    "image": "fi-na.webp"
   },
   {
     "prompt": "「フウカ」の誕生日は？",
-    "answer": "4月30日"
+    "month": 4,
+    "day": 30,
+    "image": "fuka.webp"
   },
   {
     "prompt": "「フブキ」の誕生日は？",
-    "answer": "10月21日"
+    "month": 10,
+    "day": 21,
+    "image": "fubuki.webp"
   },
   {
     "prompt": "「ホシノ」の誕生日は？",
-    "answer": "1月2日"
+    "month": 1,
+    "day": 2,
+    "image": "hosino.webp"
   },
   {
     "prompt": "「マキ」の誕生日は？",
-    "answer": "8月1日"
+    "month": 8,
+    "day": 1,
+    "image": "maki.webp"
   },
   {
     "prompt": "「マコト」の誕生日は？",
-    "answer": "3月19日"
+    "month": 3,
+    "day": 19,
+    "image": "makoto.webp"
   },
   {
     "prompt": "「マシロ」の誕生日は？",
-    "answer": "6月5日"
+    "month": 6,
+    "day": 5,
+    "image": "masiro.webp"
   },
   {
     "prompt": "「マリナ」の誕生日は？",
-    "answer": "11月4日"
+    "month": 11,
+    "day": 4,
+    "image": "marina.webp"
   },
   {
     "prompt": "「マリー」の誕生日は？",
-    "answer": "9月12日"
+    "month": 9,
+    "day": 12,
+    "image": "mari-.webp"
   },
   {
     "prompt": "「ミカ」の誕生日は？",
-    "answer": "5月8日"
+    "month": 5,
+    "day": 8,
+    "image": "mika.webp"
   },
   {
     "prompt": "「ミク」の誕生日は？",
-    "answer": "8月31日"
+    "month": 8,
+    "day": 31,
+    "image": "miku_halo.webp"
   },
   {
     "prompt": "「ミサキ」の誕生日は？",
-    "answer": "1月13日"
+    "month": 1,
+    "day": 13,
+    "image": "misaki.webp"
   },
   {
     "prompt": "「ミチル」の誕生日は？",
-    "answer": "2月22日"
+    "month": 2,
+    "day": 22,
+    "image": "mitiru.webp"
   },
   {
     "prompt": "「ミドリ」の誕生日は？",
-    "answer": "12月8日"
+    "month": 12,
+    "day": 8,
+    "image": "midori.webp"
   },
   {
     "prompt": "「ミナ」の誕生日は？",
-    "answer": "9月9日"
+    "month": 9,
+    "day": 9,
+    "image": "mina.webp"
   },
   {
     "prompt": "「ミネ」の誕生日は？",
-    "answer": "11月23日"
+    "month": 11,
+    "day": 23,
+    "image": "mine.webp"
   },
   {
     "prompt": "「ミノリ」の誕生日は？",
-    "answer": "7月14日"
+    "month": 7,
+    "day": 14,
+    "image": "minori.webp"
   },
   {
     "prompt": "「ミモリ」の誕生日は？",
-    "answer": "3月15日"
+    "month": 3,
+    "day": 15,
+    "image": "mimori.webp"
   },
   {
     "prompt": "「ミヤコ」の誕生日は？",
-    "answer": "1月7日"
+    "month": 1,
+    "day": 7,
+    "image": "miyako.webp"
   },
   {
     "prompt": "「ミユ」の誕生日は？",
-    "answer": "7月12日"
+    "month": 7,
+    "day": 12,
+    "image": "miyu.webp"
   },
   {
     "prompt": "「ムツキ」の誕生日は？",
-    "answer": "7月29日"
+    "month": 7,
+    "day": 29,
+    "image": "mutuki.webp"
   },
   {
     "prompt": "「メル」の誕生日は？",
-    "answer": "12月21日"
+    "month": 12,
+    "day": 21,
+    "image": "meru.webp"
   },
   {
     "prompt": "「メグ」の誕生日は？",
-    "answer": "4月25日"
+    "month": 4,
+    "day": 25,
+    "image": "megu.webp"
   },
   {
     "prompt": "「モエ」の誕生日は？",
-    "answer": "9月13日"
+    "month": 9,
+    "day": 13,
+    "image": "moe.webp"
   },
   {
     "prompt": "「モミジ」の誕生日は？",
-    "answer": "8月7日"
+    "month": 8,
+    "day": 7,
+    "image": "momizi.webp"
   },
   {
     "prompt": "「モモイ」の誕生日は？",
-    "answer": "12月8日"
+    "month": 12,
+    "day": 8,
+    "image": "momoi.webp"
   },
   {
     "prompt": "「ユウカ」の誕生日は？",
-    "answer": "3月14日"
+    "month": 3,
+    "day": 14,
+    "image": "yuka.webp"
   },
   {
     "prompt": "「ユカリ」の誕生日は？",
-    "answer": "6月16日"
+    "month": 6,
+    "day": 16,
+    "image": "yukari.webp"
   },
   {
     "prompt": "「ユズ」の誕生日は？",
-    "answer": "8月12日"
+    "month": 8,
+    "day": 12,
+    "image": "yuzu.webp"
   },
   {
     "prompt": "「ヨシミ」の誕生日は？",
-    "answer": "8月29日"
+    "month": 8,
+    "day": 29,
+    "image": "yosimi.webp"
   },
   {
     "prompt": "「リオ」の誕生日は？",
-    "answer": "6月6日"
+    "month": 6,
+    "day": 6,
+    "image": "rio.webp"
   },
   {
     "prompt": "「ルミ」の誕生日は？",
-    "answer": "3月5日"
+    "month": 3,
+    "day": 5,
+    "image": "rumi.webp"
   },
   {
     "prompt": "「レイ」の誕生日は？",
-    "answer": "8月9日"
+    "month": 8,
+    "day": 9,
+    "image": "rei.webp"
   },
   {
     "prompt": "「レイサ」の誕生日は？",
-    "answer": "5月31日"
+    "month": 5,
+    "day": 31,
+    "image": "reisa.webp"
   },
   {
     "prompt": "「レイジョ」の誕生日は？",
-    "answer": "3月3日"
+    "month": 3,
+    "day": 3,
+    "image": "reijo.webp"
   },
   {
     "prompt": "「レンゲ」の誕生日は？",
-    "answer": "7月23日"
+    "month": 7,
+    "day": 23,
+    "image": "renge.webp"
   },
   {
     "prompt": "「ワカモ」の誕生日は？",
-    "answer": "4月3日"
+    "month": 4,
+    "day": 3,
+    "image": "wakamo.webp"
   },
   {
     "prompt": "「御坂美琴」の誕生日は？",
-    "answer": "5月2日"
+    "month": 5,
+    "day": 2,
+    "image": "misaka_memory.webp"
   }
 ]
