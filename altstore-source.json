@@ -1,7 +1,7 @@
 {
   "name": "Shittim-Chest Source",
   "subtitle": "シッテムの箱 for Tablet - 個人配布ソース",
-  "description": "友達向けの個人配布用AltStoreソースです。",
+  "description": "個人配布用AltStoreソースです。",
   "iconURL": "https://raw.githubusercontent.com/Hotakacchi/Shittim-Chest/main/assets/icon.png",
   "website": "https://github.com/Hotakacchi/Shittim-Chest",
   "tintColor": "#182e42",
@@ -12,7 +12,7 @@
       "bundleIdentifier": "com.hotakacchi.shittimchest",
       "developerName": "hotakacchi",
       "subtitle": "Blue Archive風タブレット専用OSダッシュボード",
-      "localizedDescription": "シッテムの箱 for Tablet。タブレット専用のBlue Archive風OS体験アプリです。",
+      "localizedDescription": "シッテムの箱 for Tablet。タブレット専用のBlue Archive風OSアプリです。",
       "iconURL": "https://raw.githubusercontent.com/Hotakacchi/Shittim-Chest/main/assets/icon.png",
       "tintColor": "#182e42",
       "category": "utilities",
