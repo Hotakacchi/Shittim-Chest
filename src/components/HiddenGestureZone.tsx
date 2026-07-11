@@ -9,22 +9,10 @@ const TARGET_PATTERN: Direction[] = ['up', 'up', 'down', 'down', 'right', 'left'
 const SWIPE_MIN_DISTANCE = 40;
 const SEQUENCE_TIMEOUT_MS = 2500;
 
-export function HiddenGestureZone({
-  children,
-  onUnlock,
-  onProgress,
-}: {
-  children: ReactNode;
-  onUnlock: () => void;
-  onProgress?: (step: number, total: number) => void;
-}) {
+export function HiddenGestureZone({ children, onUnlock }: { children: ReactNode; onUnlock: () => void }) {
   const startPoint = useRef<{ x: number; y: number } | null>(null);
   const sequence = useRef<Direction[]>([]);
   const lastSwipeTime = useRef(0);
-
-  function report() {
-    onProgress?.(sequence.current.length, TARGET_PATTERN.length);
-  }
 
   function handleGrant(event: GestureResponderEvent) {
     const { pageX, pageY } = event.nativeEvent;
@@ -57,7 +45,6 @@ export function HiddenGestureZone({
       sequence.current = [...sequence.current, direction];
       if (sequence.current.length === TARGET_PATTERN.length) {
         sequence.current = [];
-        report();
         onUnlock();
         return;
       }
@@ -66,7 +53,6 @@ export function HiddenGestureZone({
       // first direction, treat it as a fresh attempt starting now.
       sequence.current = direction === TARGET_PATTERN[0] ? [direction] : [];
     }
-    report();
   }
 
   return (

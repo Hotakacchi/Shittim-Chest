@@ -152,8 +152,6 @@ export function SystemApp() {
   const [skipBoot, setSkipBoot] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [gestureProgress, setGestureProgress] = useState(0);
-  const [gestureTotal, setGestureTotal] = useState(0);
 
   useEffect(() => {
     Promise.all([
@@ -199,21 +197,9 @@ export function SystemApp() {
       />
 
       <UpdateSection />
-      <HiddenGestureZone
-        onUnlock={() => setShowAdmin(true)}
-        onProgress={(step, total) => {
-          setGestureProgress(step);
-          setGestureTotal(total);
-        }}
-      >
+      <HiddenGestureZone onUnlock={() => setShowAdmin(true)}>
         <CurrentUpdateInfo />
       </HiddenGestureZone>
-      {gestureTotal > 0 && (
-        <Text style={styles.gestureProgress}>
-          {'●'.repeat(gestureProgress)}
-          {'○'.repeat(gestureTotal - gestureProgress)}
-        </Text>
-      )}
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>シッテムの箱 v{appConfig.expo.version}</Text>
@@ -265,12 +251,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
-  },
-  gestureProgress: {
-    textAlign: 'center',
-    color: colors.inkDim,
-    fontSize: 10,
-    letterSpacing: 2,
   },
   footer: {
     marginTop: 'auto',
