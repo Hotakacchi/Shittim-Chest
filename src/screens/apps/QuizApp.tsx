@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
@@ -213,7 +213,7 @@ function DateAnswer({
 }
 
 function QuizRound({ category, onExit }: { category: Category; onExit: () => void }) {
-  const round = useMemo(() => buildRound(category), [category]);
+  const [round, setRound] = useState(() => buildRound(category));
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [choiceSelected, setChoiceSelected] = useState<string | null>(null);
@@ -259,6 +259,7 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
         <Pressable
           style={styles.primaryButton}
           onPress={() => {
+            setRound(buildRound(category));
             setIndex(0);
             setScore(0);
             setChoiceSelected(null);
