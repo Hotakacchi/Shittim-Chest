@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { ClockDisplay } from '../../components/ClockDisplay';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
-import characters from '../../data/characters.json';
+import { getTodaysDutyStudent } from '../../lib/dutyStudent';
 
 // Checked before the regular time-of-day greeting — month/day is enough
 // since these recur every year, no need to track by full date.
@@ -34,22 +34,6 @@ function getTimeGreeting(hour: number): string {
 
 function getGreeting(date: Date): string {
   return getSpecialDayGreeting(date) ?? getTimeGreeting(date.getHours());
-}
-
-function hashString(value: string): number {
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) {
-    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-  }
-  return hash;
-}
-
-// Deterministic pick from the date alone — same result all day, changes the
-// next day, and needs no storage since it's just recomputed each time.
-function getTodaysDutyStudent(date: Date) {
-  const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  const index = hashString(dateKey) % characters.length;
-  return characters[index];
 }
 
 export function ClockApp() {

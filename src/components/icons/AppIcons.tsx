@@ -77,6 +77,16 @@ export function QuizIcon({ size = 28, color = colors.ink }: IconProps) {
   );
 }
 
+export function StudentListIcon({ size = 28, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Rect x={4} y={3} width={16} height={18} rx={2} stroke={color} strokeWidth={1.8} />
+      <Circle cx={12} cy={9.6} r={2.4} stroke={color} strokeWidth={1.8} />
+      <Path d="M7.8 16.4c0-2 1.9-3.2 4.2-3.2s4.2 1.2 4.2 3.2" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
 const GEAR_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 export function GearIcon({ size = 28, color = colors.ink }: IconProps) {
