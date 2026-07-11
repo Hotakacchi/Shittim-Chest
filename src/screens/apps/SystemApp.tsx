@@ -5,6 +5,8 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import * as Updates from 'expo-updates';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
+import { HiddenGestureZone } from '../../components/HiddenGestureZone';
+import { AdminPanel } from '../../components/AdminPanel';
 import appConfig from '../../../app.json';
 
 type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'upToDate' | 'error';
@@ -149,6 +151,7 @@ export function SystemApp() {
   const [keepAwake, setKeepAwake] = useState(false);
   const [skipBoot, setSkipBoot] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -194,11 +197,15 @@ export function SystemApp() {
       />
 
       <UpdateSection />
-      <CurrentUpdateInfo />
+      <HiddenGestureZone onUnlock={() => setShowAdmin(true)}>
+        <CurrentUpdateInfo />
+      </HiddenGestureZone>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>シッテムの箱 v{appConfig.expo.version}</Text>
       </View>
+
+      <AdminPanel visible={showAdmin} onClose={() => setShowAdmin(false)} />
     </View>
   );
 }
