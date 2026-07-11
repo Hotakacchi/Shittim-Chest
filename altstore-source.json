@@ -23,7 +23,7 @@
           "date": "2026-07-10",
           "localizedDescription": "タップ時の青い波紋アニメーションとクリック音を追加（ホーム画面・アプリ内どこでも反応）。SYSTEM画面にタップ音の音量設定を追加。",
           "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.2/ShittimChest-unsigned.ipa",
-          "size": 8030941,
+          "size": 8030964,
           "minOSVersion": "16.0"
         },
         {
