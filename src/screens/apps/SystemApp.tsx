@@ -2,12 +2,90 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import * as Updates from 'expo-updates';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
-import { loadTapVolume, setTapVolume } from '../../lib/tapVolume';
 import appConfig from '../../../app.json';
 
-const VOLUME_LEVELS = [0, 0.25, 0.5, 0.75, 1];
+type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'upToDate' | 'error';
+
+function UpdateSection() {
+  const [status, setStatus] = useState<UpdateStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (Updates.isEnabled) {
+      checkForUpdate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!Updates.isEnabled) {
+    return (
+      <View style={styles.row}>
+        <View style={styles.rowText}>
+          <Text style={styles.rowLabel}>アップデート</Text>
+          <Text style={styles.rowDescription}>
+            この機能はビルド版でのみ利用できます（Expo Go/開発中は無効）
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  async function checkForUpdate() {
+    setStatus('checking');
+    setErrorMessage('');
+    try {
+      const result = await Updates.checkForUpdateAsync();
+      setStatus(result.isAvailable ? 'available' : 'upToDate');
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function applyUpdate() {
+    setStatus('downloading');
+    setErrorMessage('');
+    try {
+      await Updates.fetchUpdateAsync();
+      await Updates.reloadAsync();
+    } catch (error) {
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  const statusLabel: Record<UpdateStatus, string> = {
+    idle: `チャンネル: ${Updates.channel ?? '未設定'}`,
+    checking: '確認中…',
+    available: '別バージョンが見つかりました',
+    downloading: '更新をダウンロード中…',
+    upToDate: '最新の状態です',
+    error: `エラー: ${errorMessage}`,
+  };
+
+  const busy = status === 'checking' || status === 'downloading';
+
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>アップデート</Text>
+        <Text style={styles.rowDescription}>{statusLabel[status]}</Text>
+      </View>
+      <Pressable
+        style={styles.updateButton}
+        onPress={status === 'available' ? applyUpdate : checkForUpdate}
+        disabled={busy}
+      >
+        <Text style={styles.updateButtonLabel}>
+          {status === 'available' ? '適用する' : '確認する'}
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
 
 function SettingRow({
   label,
@@ -32,47 +110,6 @@ function SettingRow({
         trackColor={{ false: 'rgba(30,58,82,0.2)', true: colors.accent }}
         thumbColor="#ffffff"
       />
-    </View>
-  );
-}
-
-function VolumeRow() {
-  const [volume, setVolume] = useState(1);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    loadTapVolume().then((value) => {
-      setVolume(value);
-      setLoaded(true);
-    });
-  }, []);
-
-  function onSelect(value: number) {
-    setVolume(value);
-    setTapVolume(value);
-  }
-
-  if (!loaded) return null;
-
-  return (
-    <View style={styles.row}>
-      <View style={styles.rowText}>
-        <Text style={styles.rowLabel}>タップ音の音量</Text>
-        <Text style={styles.rowDescription}>アイコン・背景をタップしたときの効果音の大きさ</Text>
-      </View>
-      <View style={styles.volumeLevels}>
-        {VOLUME_LEVELS.map((level) => (
-          <Pressable
-            key={level}
-            onPress={() => onSelect(level)}
-            style={[
-              styles.volumeDot,
-              { opacity: 0.3 + level * 0.7 },
-              volume === level && styles.volumeDotActive,
-            ]}
-          />
-        ))}
-      </View>
     </View>
   );
 }
@@ -125,7 +162,7 @@ export function SystemApp() {
         onChange={onChangeSkipBoot}
       />
 
-      <VolumeRow />
+      <UpdateSection />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>シッテムの箱 v{appConfig.expo.version}</Text>
@@ -165,20 +202,16 @@ const styles = StyleSheet.create({
     color: colors.inkDim,
     fontSize: 12,
   },
-  volumeLevels: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  volumeDot: {
-    width: 20,
-    height: 20,
+  updateButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 10,
     backgroundColor: colors.accent,
   },
-  volumeDotActive: {
-    opacity: 1,
-    borderWidth: 2,
-    borderColor: colors.ink,
+  updateButtonLabel: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   footer: {
     marginTop: 'auto',

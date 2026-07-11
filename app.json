@@ -2,22 +2,21 @@
   "expo": {
     "name": "シッテムの箱",
     "slug": "Shittim-Chest",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.hotakacchi.shittimchest",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "NSCameraUsageDescription": "写真を撮影するためにカメラを使用します。",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "plugins": [
-      "expo-camera",
-      "expo-audio"
+      "expo-camera"
     ],
     "android": {
       "adaptiveIcon": {
@@ -40,6 +39,15 @@
         "projectId": "98733792-6dc9-4a67-a801-fec09ecb9772"
       }
     },
-    "owner": "hotakacchi"
+    "owner": "hotakacchi",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/98733792-6dc9-4a67-a801-fec09ecb9772",
+      "requestHeaders": {
+        "expo-channel-name": "preview"
+      }
+    }
   }
 }

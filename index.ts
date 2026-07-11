@@ -8,15 +8,10 @@ import { createElement } from 'react';
 // A production build has no redbox and no console — without this, a fatal
 // JS exception thrown outside of React's render (e.g. in an async callback)
 // just silently kills the JS thread with no crash log and no on-screen sign
-// of what happened. Alert.alert is imperative, so it works even though
-// nothing here is a rendered component.
-//
-// Deliberately NOT forwarding to the previous/default handler here: for a
-// fatal error, the default handler reports back to native and terminates the
-// app, which raced with (and appears to have won against) the Alert actually
-// being shown. Swallowing it keeps the JS runtime alive long enough to see
-// the real error — this is diagnostic-only, not how a shipped build should
-// behave long-term.
+// of what happened. Not forwarding to the previous/default handler: for a
+// fatal error, the default handler reports back to native and terminates
+// the app, which otherwise races with (and beats) the Alert actually being
+// shown.
 (global as any).ErrorUtils?.setGlobalHandler?.((error: Error, isFatal?: boolean) => {
   Alert.alert(
     isFatal ? '致命的なエラー' : 'エラー',

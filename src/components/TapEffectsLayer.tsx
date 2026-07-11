@@ -1,10 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Animated, Easing, GestureResponderEvent, StyleSheet, View } from 'react-native';
-import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
-import { getTapVolume, loadTapVolume } from '../lib/tapVolume';
 
-const tapSfx = require('../../assets/sfx/tap.wav');
 const RIPPLE_SIZE = 68;
 const RIPPLE_DURATION_MS = 340;
 
@@ -13,24 +10,15 @@ type Ripple = { id: number; x: number; y: number; anim: Animated.Value };
 // Wraps the whole app (mounted at the screen root, so pageX/pageY lines up
 // directly with this layer's own coordinate space) to give every tap —
 // home-screen icons, background, or anything inside an open app — the same
-// blue ripple + click feedback, in one place instead of each screen
-// reimplementing it.
+// blue ripple feedback, in one place instead of each screen reimplementing
+// it. No sound playback here — expo-audio/tap.wav were removed while we
+// isolate whether they were behind the launch crash.
 export function TapEffectsLayer({ children }: { children: ReactNode }) {
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleIdRef = useRef(0);
-  const tapSound = useAudioPlayer(tapSfx);
-
-  useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true });
-    loadTapVolume();
-  }, []);
 
   function handleTouchEnd(event: GestureResponderEvent) {
     const { pageX, pageY } = event.nativeEvent;
-
-    tapSound.volume = getTapVolume();
-    tapSound.seekTo(0);
-    tapSound.play();
 
     const id = rippleIdRef.current++;
     const anim = new Animated.Value(0);
