@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { File } from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
 import { colors } from '../../theme/colors';
 import { GalleryPhoto, getGalleryPhotos, removeGalleryPhoto } from '../../lib/galleryStore';
 
@@ -27,6 +28,20 @@ export function GalleryApp() {
     const next = await removeGalleryPhoto(photo.id);
     setPhotos(next);
     setViewing(null);
+  }
+
+  async function handleSaveToDevice(photo: GalleryPhoto) {
+    const permission = await MediaLibrary.requestPermissionsAsync(true);
+    if (!permission.granted) {
+      Alert.alert('保存できません', '写真を保存するにはフォトライブラリへのアクセスを許可してください。');
+      return;
+    }
+    try {
+      await MediaLibrary.saveToLibraryAsync(photo.uri);
+      Alert.alert('保存しました', '端末のフォトライブラリに保存しました。');
+    } catch {
+      Alert.alert('保存できません', '写真の保存中にエラーが発生しました。');
+    }
   }
 
   return (
@@ -58,6 +73,14 @@ export function GalleryApp() {
             <Pressable style={styles.modalButton} onPress={() => setViewing(null)}>
               <Text style={styles.modalButtonLabel}>閉じる</Text>
             </Pressable>
+            {viewing && (
+              <Pressable
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={() => handleSaveToDevice(viewing)}
+              >
+                <Text style={styles.modalButtonLabel}>端末に保存</Text>
+              </Pressable>
+            )}
             {viewing && (
               <Pressable
                 style={[styles.modalButton, styles.deleteButton]}
@@ -121,6 +144,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 14,
     backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  saveButton: {
+    backgroundColor: 'rgba(94,200,128,0.35)',
   },
   deleteButton: {
     backgroundColor: 'rgba(255,93,108,0.35)',

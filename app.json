@@ -16,7 +16,14 @@
       }
     },
     "plugins": [
-      "expo-camera"
+      "expo-camera",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": false,
+          "savePhotosPermission": "撮影した写真を端末のフォトライブラリに保存するために使用します。"
+        }
+      ]
     ],
     "android": {
       "adaptiveIcon": {
