@@ -6,17 +6,41 @@ import characters from '../../data/characters.json';
 
 const NUM_COLUMNS = 6;
 
+type Character = { name: string; image: string };
+type ListEntry = Character | { filler: true; key: string };
+
+// FlatList grid rows stretch their cards with flex:1 to fill the row width
+// — fine for full rows, but the last row (when the count doesn't divide
+// evenly by NUM_COLUMNS) has fewer cards, so they'd stretch to fill the
+// leftover space and look oversized. Padding with invisible filler entries
+// keeps every row's card count (and therefore card width) consistent.
+function buildListData(): ListEntry[] {
+  const remainder = characters.length % NUM_COLUMNS;
+  if (remainder === 0) return characters;
+  const fillerCount = NUM_COLUMNS - remainder;
+  const fillers: ListEntry[] = Array.from({ length: fillerCount }, (_, i) => ({
+    filler: true,
+    key: `filler-${i}`,
+  }));
+  return [...characters, ...fillers];
+}
+
+const LIST_DATA = buildListData();
+
 export function StudentListApp() {
   const dutyStudent = getTodaysDutyStudent(new Date());
 
   return (
     <FlatList
-      data={characters}
-      keyExtractor={(item) => item.image}
+      data={LIST_DATA}
+      keyExtractor={(item) => ('filler' in item ? item.key : item.image)}
       numColumns={NUM_COLUMNS}
       contentContainerStyle={styles.list}
       columnWrapperStyle={styles.row}
       renderItem={({ item }) => {
+        if ('filler' in item) {
+          return <View style={styles.filler} />;
+        }
         const isDuty = item.image === dutyStudent.image;
         return (
           <View style={[styles.card, isDuty && styles.cardDuty]}>
@@ -55,6 +79,9 @@ const styles = StyleSheet.create({
     borderColor: colors.panelBorderOnLight,
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  filler: {
+    flex: 1,
   },
   cardDuty: {
     borderWidth: 2,
