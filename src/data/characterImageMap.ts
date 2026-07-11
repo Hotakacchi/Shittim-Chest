@@ -99,7 +99,6 @@ export const CHARACTER_IMAGES: Record<string, number> = {
   '10096.webp': require('../../assets/characters/10096.webp'),
   '10097.webp': require('../../assets/characters/10097.webp'),
   '10098.webp': require('../../assets/characters/10098.webp'),
-  '10099.webp': require('../../assets/characters/10099.webp'),
   '10100.webp': require('../../assets/characters/10100.webp'),
   '10101.webp': require('../../assets/characters/10101.webp'),
   '10102.webp': require('../../assets/characters/10102.webp'),
