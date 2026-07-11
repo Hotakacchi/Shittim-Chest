@@ -3,8 +3,9 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { ClockDisplay } from '../../components/ClockDisplay';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
-import { getTodaysDutyStudent } from '../../lib/dutyStudent';
+import { getOrCreateTodaysDutyStudent } from '../../lib/dutyStudent';
 import { getOwnedCharacters } from '../../lib/ownedCharacters';
+import characters from '../../data/characters.json';
 
 // Checked before the regular time-of-day greeting — month/day is enough
 // since these recur every year, no need to track by full date.
@@ -39,26 +40,32 @@ function getGreeting(date: Date): string {
 }
 
 export function ClockApp() {
-  const [owned, setOwned] = useState<string[]>([]);
+  const [dutyStudent, setDutyStudent] = useState<(typeof characters)[number] | null>(null);
 
   useEffect(() => {
-    getOwnedCharacters().then(setOwned);
+    getOwnedCharacters().then((owned) => {
+      getOrCreateTodaysDutyStudent(owned).then(setDutyStudent);
+    });
   }, []);
-
-  const dutyStudent = getTodaysDutyStudent(new Date(), owned);
 
   return (
     <View style={styles.container}>
       <ClockDisplay />
       <Text style={styles.greeting}>{getGreeting(new Date())}</Text>
 
-      <View style={styles.dutyCard}>
-        <Image source={CHARACTER_IMAGES[dutyStudent.image]} style={styles.dutyImage} resizeMode="contain" />
-        <View>
-          <Text style={styles.dutyLabel}>本日の当番</Text>
-          <Text style={styles.dutyName}>{dutyStudent.name}</Text>
+      {dutyStudent && (
+        <View style={styles.dutyCard}>
+          <Image
+            source={CHARACTER_IMAGES[dutyStudent.image]}
+            style={styles.dutyImage}
+            resizeMode="contain"
+          />
+          <View>
+            <Text style={styles.dutyLabel}>本日の当番</Text>
+            <Text style={styles.dutyName}>{dutyStudent.name}</Text>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }

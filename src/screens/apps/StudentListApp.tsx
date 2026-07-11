@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
-import { getTodaysDutyStudent } from '../../lib/dutyStudent';
+import { getOrCreateTodaysDutyStudent } from '../../lib/dutyStudent';
 import { getOwnedCharacters, setOwnedCharacters, toggleOwnedCharacter } from '../../lib/ownedCharacters';
 import { StudentDetailModal } from '../../components/StudentDetailModal';
 import characters from '../../data/characters.json';
@@ -34,12 +34,17 @@ export function StudentListApp() {
   const [selected, setSelected] = useState<Character | null>(null);
   const [owned, setOwned] = useState<string[]>([]);
   const [editMode, setEditMode] = useState(false);
+  const [dutyStudent, setDutyStudent] = useState<Character | null>(null);
 
   useEffect(() => {
-    getOwnedCharacters().then(setOwned);
+    getOwnedCharacters().then((initialOwned) => {
+      setOwned(initialOwned);
+      // Resolved once per day and locked in — later edits to `owned` in this
+      // session (via toggling/select-all/deselect-all below) intentionally
+      // don't re-trigger this, so today's duty pick doesn't shift underfoot.
+      getOrCreateTodaysDutyStudent(initialOwned).then(setDutyStudent);
+    });
   }, []);
-
-  const dutyStudent = getTodaysDutyStudent(new Date(), owned);
 
   function handleToggleOwned(image: string) {
     toggleOwnedCharacter(image).then(setOwned);
@@ -93,7 +98,7 @@ export function StudentListApp() {
           if ('filler' in item) {
             return <View style={styles.filler} />;
           }
-          const isDuty = item.image === dutyStudent.image;
+          const isDuty = item.image === dutyStudent?.image;
           const isOwned = owned.includes(item.image);
           return (
             <Pressable
