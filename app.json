@@ -2,14 +2,14 @@
   "expo": {
     "name": "シッテムの箱",
     "slug": "Shittim-Chest",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.hotakacchi.shittimchest",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "infoPlist": {
         "NSCameraUsageDescription": "写真を撮影するためにカメラを使用します。",
         "ITSAppUsesNonExemptEncryption": false
