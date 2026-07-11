@@ -7,22 +7,50 @@ on:
         description: "Update message (shown in EAS dashboard)"
         required: false
         default: "Manual OTA update"
+  push:
+    branches: [main]
+    paths: ["app.json"]
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check whether app.json's version changed
+        id: version_check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BEFORE=$(git show HEAD^:app.json 2>/dev/null | node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).expo.version' 2>/dev/null || echo "")
+          AFTER=$(node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).expo.version' < app.json)
+          echo "before=$BEFORE after=$AFTER"
+          if [ "$BEFORE" != "$AFTER" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-node@v4
+        if: steps.version_check.outputs.changed == 'true'
         with:
           node-version: 20
 
       - name: Install dependencies
+        if: steps.version_check.outputs.changed == 'true'
         run: npm ci
 
       - name: Publish update
+        if: steps.version_check.outputs.changed == 'true'
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          npx eas-cli update --channel preview --non-interactive --message "${{ inputs.message }}"
+          MESSAGE="${{ inputs.message }}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            MESSAGE="Auto-publish for version bump"
+          fi
+          npx eas-cli update --channel preview --non-interactive --message "$MESSAGE"

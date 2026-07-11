@@ -87,6 +87,37 @@ function UpdateSection() {
   );
 }
 
+function formatUpdateTimestamp(date: Date): string {
+  const y = date.getFullYear();
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  const hh = date.getHours().toString().padStart(2, '0');
+  const mm = date.getMinutes().toString().padStart(2, '0');
+  return `${y}年${m}月${d}日 ${hh}:${mm}`;
+}
+
+function CurrentUpdateInfo() {
+  if (!Updates.isEnabled) return null;
+
+  const detailLine = Updates.isEmbeddedLaunch
+    ? 'ネイティブビルドに内蔵された内容で起動中'
+    : Updates.createdAt
+      ? `${formatUpdateTimestamp(Updates.createdAt)} 公開分を適用中`
+      : '適用中のOTA更新の詳細は不明';
+
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>現在の適用状況</Text>
+        <Text style={styles.rowDescription}>{detailLine}</Text>
+        {!Updates.isEmbeddedLaunch && Updates.updateId && (
+          <Text style={styles.rowDescription}>ID: {Updates.updateId.slice(0, 8)}</Text>
+        )}
+      </View>
+    </View>
+  );
+}
+
 function SettingRow({
   label,
   description,
@@ -163,6 +194,7 @@ export function SystemApp() {
       />
 
       <UpdateSection />
+      <CurrentUpdateInfo />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>シッテムの箱 v{appConfig.expo.version}</Text>
