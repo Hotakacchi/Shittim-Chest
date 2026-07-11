@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.5",
+          "buildVersion": "6",
+          "date": "2026-07-11",
+          "localizedDescription": "診断ビルド。起動後に画面が真っ黒のまま動かない不具合を調査するため、エラーが起きた場合に画面上へ表示する仕組みを追加しました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.5/ShittimChest-unsigned.ipa",
+          "size": 8031915,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.4",
           "buildVersion": "5",
           "date": "2026-07-11",
