@@ -61,6 +61,22 @@ export function GalleryIcon({ size = 28, color = colors.ink }: IconProps) {
   );
 }
 
+export function QuizIcon({ size = 28, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx={12} cy={12} r={9} stroke={color} strokeWidth={1.8} />
+      <Path
+        d="M9.6 9.6c0-1.4 1.1-2.4 2.4-2.4s2.4 0.9 2.4 2.2c0 1.4-1.2 1.8-1.8 2.4-.5.5-.6 1-.6 1.6"
+        stroke={color}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Circle cx={12} cy={16.6} r={0.9} fill={color} />
+    </Svg>
+  );
+}
+
 const GEAR_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 export function GearIcon({ size = 28, color = colors.ink }: IconProps) {

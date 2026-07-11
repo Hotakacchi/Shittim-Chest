@@ -17,6 +17,7 @@ import {
   GearIcon,
   CameraIcon,
   GalleryIcon,
+  QuizIcon,
 } from '../components/icons/AppIcons';
 import { ClockApp } from './apps/ClockApp';
 import { ScheduleApp } from './apps/ScheduleApp';
@@ -24,6 +25,7 @@ import { TaskApp } from './apps/TaskApp';
 import { SystemApp } from './apps/SystemApp';
 import { CameraApp } from './apps/CameraApp';
 import { GalleryApp } from './apps/GalleryApp';
+import { QuizApp } from './apps/QuizApp';
 
 const APP_DEFS: AppDef[] = [
   { key: 'CLOCK', label: 'CLOCK', Icon: ClockIcon },
@@ -31,6 +33,7 @@ const APP_DEFS: AppDef[] = [
   { key: 'TASK', label: 'TASK', Icon: ChecklistIcon },
   { key: 'CAMERA', label: 'CAMERA', Icon: CameraIcon },
   { key: 'GALLERY', label: 'GALLERY', Icon: GalleryIcon },
+  { key: 'QUIZ', label: 'QUIZ', Icon: QuizIcon },
   { key: 'SYSTEM', label: 'SYSTEM', Icon: GearIcon },
 ];
 
@@ -40,6 +43,7 @@ const APP_SCREENS: Record<string, React.ComponentType> = {
   TASK: TaskApp,
   CAMERA: CameraApp,
   GALLERY: GalleryApp,
+  QUIZ: QuizApp,
   SYSTEM: SystemApp,
 };
 

@@ -1,0 +1,767 @@
+[
+  {
+    "image": "hosino.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "小鳥遊"
+  },
+  {
+    "image": "yuka.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "早瀬"
+  },
+  {
+    "image": "airi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "栗村"
+  },
+  {
+    "image": "aoi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "扇喜"
+  },
+  {
+    "image": "aoba.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "内海"
+  },
+  {
+    "image": "akane.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "室笠"
+  },
+  {
+    "image": "akari.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "鰐渕"
+  },
+  {
+    "image": "akira.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "清澄"
+  },
+  {
+    "image": "akemi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "栗浜"
+  },
+  {
+    "image": "ako.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "天雨"
+  },
+  {
+    "image": "azami.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "土生"
+  },
+  {
+    "image": "azusa.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "白洲"
+  },
+  {
+    "image": "asuna.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "一之瀬"
+  },
+  {
+    "image": "atuko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "秤"
+  },
+  {
+    "image": "ayane.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "奥空"
+  },
+  {
+    "image": "ayame.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "七稜"
+  },
+  {
+    "image": "ayumu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "岩櫃"
+  },
+  {
+    "image": "arisu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "天童"
+  },
+  {
+    "image": "aru.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "陸八魔"
+  },
+  {
+    "image": "iori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "銀鏡"
+  },
+  {
+    "image": "izuna.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "久田"
+  },
+  {
+    "image": "izumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "獅子堂"
+  },
+  {
+    "image": "itika.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "仲正"
+  },
+  {
+    "image": "ibuki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "丹花"
+  },
+  {
+    "image": "iroha.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "棗"
+  },
+  {
+    "image": "ui.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "古関"
+  },
+  {
+    "image": "utaha.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "白石"
+  },
+  {
+    "image": "umika.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "里浜"
+  },
+  {
+    "image": "eimi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "和泉元"
+  },
+  {
+    "image": "eri.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "白尾"
+  },
+  {
+    "image": "kai.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "申谷"
+  },
+  {
+    "image": "kaede.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "勇美"
+  },
+  {
+    "image": "erika.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "旗見"
+  },
+  {
+    "image": "kaguya.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "漆原"
+  },
+  {
+    "image": "kazusa.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "杏山"
+  },
+  {
+    "image": "kasumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "鬼怒川"
+  },
+  {
+    "image": "kaho.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "桑上"
+  },
+  {
+    "image": "kaya.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "不知火"
+  },
+  {
+    "image": "kayoko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "鬼方"
+  },
+  {
+    "image": "karin.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "角楯"
+  },
+  {
+    "image": "kanna.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "尾刃"
+  },
+  {
+    "image": "kikyou.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "桐生"
+  },
+  {
+    "image": "kisaki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "竜華"
+  },
+  {
+    "image": "kirara.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "夜桜"
+  },
+  {
+    "image": "kirino.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "中務"
+  },
+  {
+    "image": "kokona.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "春原"
+  },
+  {
+    "image": "kotama.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "音瀬"
+  },
+  {
+    "image": "kotori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "豊見"
+  },
+  {
+    "image": "koharu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "下江"
+  },
+  {
+    "image": "koyuki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "黒崎"
+  },
+  {
+    "image": "saori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "錠前"
+  },
+  {
+    "image": "saki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "空井"
+  },
+  {
+    "image": "sakurako.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "歌住"
+  },
+  {
+    "image": "satuki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "京極"
+  },
+  {
+    "image": "saya.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "薬子"
+  },
+  {
+    "image": "sigure.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "間宵"
+  },
+  {
+    "image": "sizuko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "河和"
+  },
+  {
+    "image": "sinon.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "川流"
+  },
+  {
+    "image": "simiko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "円堂"
+  },
+  {
+    "image": "zyuri.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "牛牧"
+  },
+  {
+    "image": "syuro.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "箭吹"
+  },
+  {
+    "image": "syun.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "春原"
+  },
+  {
+    "image": "zyunko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "赤司"
+  },
+  {
+    "image": "siroko.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "砂狼"
+  },
+  {
+    "image": "suou.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "朝霧"
+  },
+  {
+    "image": "suzumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "守月"
+  },
+  {
+    "image": "subaru.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "梯"
+  },
+  {
+    "image": "sumire.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "乙花"
+  },
+  {
+    "image": "seia.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "百合園"
+  },
+  {
+    "image": "sena.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "氷室"
+  },
+  {
+    "image": "serika.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "黒見"
+  },
+  {
+    "image": "serina.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "鷲見"
+  },
+  {
+    "image": "takane.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "三善"
+  },
+  {
+    "image": "tiaki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "元宮"
+  },
+  {
+    "image": "tyerino.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "連河"
+  },
+  {
+    "image": "tise.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "和楽"
+  },
+  {
+    "image": "tinatu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "火宮"
+  },
+  {
+    "image": "tihiro.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "各務"
+  },
+  {
+    "image": "tukuyo.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "大野"
+  },
+  {
+    "image": "tubaki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "春日"
+  },
+  {
+    "image": "tumugi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "椎名"
+  },
+  {
+    "image": "turugi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "剣先"
+  },
+  {
+    "image": "toki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "飛鳥馬"
+  },
+  {
+    "image": "tomoe.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "佐城"
+  },
+  {
+    "image": "nagisa.webp",
+    "prompt": "このキャラクター名字は？",
+    "answer": "桐藤"
+  },
+  {
+    "image": "nagusa.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "御稜"
+  },
+  {
+    "image": "natu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "柚鳥"
+  },
+  {
+    "image": "niya.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "天地"
+  },
+  {
+    "image": "neru.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "美甘"
+  },
+  {
+    "image": "noa.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "生塩"
+  },
+  {
+    "image": "nozomi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "橘"
+  },
+  {
+    "image": "nodoka.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "天見"
+  },
+  {
+    "image": "nonomi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "十六夜"
+  },
+  {
+    "image": "hasumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "羽川"
+  },
+  {
+    "image": "hanae.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "朝顔"
+  },
+  {
+    "image": "hanako.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "浦和"
+  },
+  {
+    "image": "haruka.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "伊草"
+  },
+  {
+    "image": "haruna.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "黒舘"
+  },
+  {
+    "image": "hare.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "小鈎"
+  },
+  {
+    "image": "hikari.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "橘"
+  },
+  {
+    "image": "hina.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "空崎"
+  },
+  {
+    "image": "hinata.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "若葉"
+  },
+  {
+    "image": "hibiki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "猫塚"
+  },
+  {
+    "image": "hifumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "阿慈谷"
+  },
+  {
+    "image": "himari.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "明星"
+  },
+  {
+    "image": "hiyori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "槌永"
+  },
+  {
+    "image": "fi-na.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "朝比奈"
+  },
+  {
+    "image": "fuka.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "愛清"
+  },
+  {
+    "image": "fubuki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "合歓垣"
+  },
+  {
+    "image": "fuyu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "若狭"
+  },
+  {
+    "image": "mai.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "風巻"
+  },
+  {
+    "image": "maia.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "立木"
+  },
+  {
+    "image": "maki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "小塗"
+  },
+  {
+    "image": "makoto.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "羽沼"
+  },
+  {
+    "image": "masiro.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "静山"
+  },
+  {
+    "image": "mari-.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "伊落"
+  },
+  {
+    "image": "marina.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "池倉"
+  },
+  {
+    "image": "mika.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "聖園"
+  },
+  {
+    "image": "misaki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "戒野"
+  },
+  {
+    "image": "mitiru.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "千鳥"
+  },
+  {
+    "image": "midori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "才羽"
+  },
+  {
+    "image": "mina.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "近衛"
+  },
+  {
+    "image": "mine.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "蒼森"
+  },
+  {
+    "image": "minori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "安守"
+  },
+  {
+    "image": "mimori.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "水羽"
+  },
+  {
+    "image": "miyako.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "月雪"
+  },
+  {
+    "image": "miyu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "霞沢"
+  },
+  {
+    "image": "miyo.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "桜井"
+  },
+  {
+    "image": "mirai.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "吾妻"
+  },
+  {
+    "image": "mutuki.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "浅黄"
+  },
+  {
+    "image": "megu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "下倉"
+  },
+  {
+    "image": "meru.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "姫木"
+  },
+  {
+    "image": "moe.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "風倉"
+  },
+  {
+    "image": "momizi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "秋泉"
+  },
+  {
+    "image": "momoi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "才羽"
+  },
+  {
+    "image": "momoka.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "由良木"
+  },
+  {
+    "image": "yakumo.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "新槇"
+  },
+  {
+    "image": "yukari.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "勘解由小路"
+  },
+  {
+    "image": "yukino.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "七度"
+  },
+  {
+    "image": "yuzu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "花岡"
+  },
+  {
+    "image": "yume.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "梔子"
+  },
+  {
+    "image": "yosimi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "伊原木"
+  },
+  {
+    "image": "rabu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "河駒風"
+  },
+  {
+    "image": "rio.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "調月"
+  },
+  {
+    "image": "ritu.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "薄葉"
+  },
+  {
+    "image": "rin.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "七神"
+  },
+  {
+    "image": "rumi.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "朱城"
+  },
+  {
+    "image": "rei.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "野正"
+  },
+  {
+    "image": "reisa.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "宇沢"
+  },
+  {
+    "image": "reijo.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "鹿山"
+  },
+  {
+    "image": "rena.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "衣斐"
+  },
+  {
+    "image": "renge.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "不破"
+  },
+  {
+    "image": "wakamo.webp",
+    "prompt": "このキャラクターの名字は？",
+    "answer": "狐坂"
+  }
+]
