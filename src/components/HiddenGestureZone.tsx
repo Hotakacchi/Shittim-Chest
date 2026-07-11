@@ -8,19 +8,33 @@ type Direction = 'up' | 'down' | 'left' | 'right';
 const TARGET_PATTERN: Direction[] = ['up', 'up', 'down', 'down', 'right', 'left', 'right', 'left'];
 const MOVE_THRESHOLD = 35;
 
-export function HiddenGestureZone({ children, onUnlock }: { children: ReactNode; onUnlock: () => void }) {
+export function HiddenGestureZone({
+  children,
+  onUnlock,
+  onProgress,
+}: {
+  children: ReactNode;
+  onUnlock: () => void;
+  onProgress?: (step: number, total: number) => void;
+}) {
   const lastPoint = useRef<{ x: number; y: number } | null>(null);
   const sequence = useRef<Direction[]>([]);
+
+  function report() {
+    onProgress?.(sequence.current.length, TARGET_PATTERN.length);
+  }
 
   function reset() {
     lastPoint.current = null;
     sequence.current = [];
+    report();
   }
 
   function handleGrant(event: GestureResponderEvent) {
     const { pageX, pageY } = event.nativeEvent;
     lastPoint.current = { x: pageX, y: pageY };
     sequence.current = [];
+    report();
   }
 
   function handleMove(event: GestureResponderEvent) {
@@ -39,13 +53,16 @@ export function HiddenGestureZone({ children, onUnlock }: { children: ReactNode;
       sequence.current = [...sequence.current, direction];
       if (sequence.current.length === TARGET_PATTERN.length) {
         sequence.current = [];
+        report();
         onUnlock();
+        return;
       }
     } else {
       // Forgiving restart: if this wrong move happens to be the pattern's
       // first direction, treat it as a fresh attempt starting now.
       sequence.current = direction === TARGET_PATTERN[0] ? [direction] : [];
     }
+    report();
   }
 
   return (
