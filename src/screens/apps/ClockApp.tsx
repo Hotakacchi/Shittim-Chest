@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { ClockDisplay } from '../../components/ClockDisplay';
+import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
+import characters from '../../data/characters.json';
 
 // Checked before the regular time-of-day greeting — month/day is enough
 // since these recur every year, no need to track by full date.
@@ -34,11 +36,37 @@ function getGreeting(date: Date): string {
   return getSpecialDayGreeting(date) ?? getTimeGreeting(date.getHours());
 }
 
+function hashString(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+// Deterministic pick from the date alone — same result all day, changes the
+// next day, and needs no storage since it's just recomputed each time.
+function getTodaysDutyStudent(date: Date) {
+  const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  const index = hashString(dateKey) % characters.length;
+  return characters[index];
+}
+
 export function ClockApp() {
+  const dutyStudent = getTodaysDutyStudent(new Date());
+
   return (
     <View style={styles.container}>
       <ClockDisplay />
       <Text style={styles.greeting}>{getGreeting(new Date())}</Text>
+
+      <View style={styles.dutyCard}>
+        <Image source={QUIZ_IMAGES[dutyStudent.image]} style={styles.dutyImage} resizeMode="cover" />
+        <View>
+          <Text style={styles.dutyLabel}>本日の日直</Text>
+          <Text style={styles.dutyName}>{dutyStudent.name}</Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -54,5 +82,32 @@ const styles = StyleSheet.create({
     color: colors.inkDim,
     fontSize: 16,
     letterSpacing: 1,
+  },
+  dutyCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+    backgroundColor: colors.panelOnLight,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  dutyImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+  dutyLabel: {
+    color: colors.inkDim,
+    fontSize: 11,
+    letterSpacing: 1,
+  },
+  dutyName: {
+    color: colors.ink,
+    fontSize: 15,
+    fontWeight: '700',
   },
 });

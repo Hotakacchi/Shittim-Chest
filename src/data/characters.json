@@ -1,0 +1,570 @@
+[
+  {
+    "name": "アイリ",
+    "image": "airi.webp"
+  },
+  {
+    "name": "アオイ",
+    "image": "aoi.webp"
+  },
+  {
+    "name": "アオバ",
+    "image": "aoba.webp"
+  },
+  {
+    "name": "アカネ",
+    "image": "akane.webp"
+  },
+  {
+    "name": "アカリ",
+    "image": "akari.webp"
+  },
+  {
+    "name": "アキラ",
+    "image": "akira.webp"
+  },
+  {
+    "name": "アコ",
+    "image": "ako.webp"
+  },
+  {
+    "name": "アスナ",
+    "image": "asuna.webp"
+  },
+  {
+    "name": "アズサ",
+    "image": "azusa.webp"
+  },
+  {
+    "name": "アツコ",
+    "image": "atuko.webp"
+  },
+  {
+    "name": "アヤネ",
+    "image": "ayane.webp"
+  },
+  {
+    "name": "アユム",
+    "image": "ayumu.webp"
+  },
+  {
+    "name": "アリス",
+    "image": "arisu.webp"
+  },
+  {
+    "name": "アル",
+    "image": "aru.webp"
+  },
+  {
+    "name": "アロナ",
+    "image": "arona_halo.webp"
+  },
+  {
+    "name": "イオリ",
+    "image": "iori.webp"
+  },
+  {
+    "name": "イズナ",
+    "image": "izuna.webp"
+  },
+  {
+    "name": "イズミ",
+    "image": "izumi.webp"
+  },
+  {
+    "name": "イチカ",
+    "image": "itika.webp"
+  },
+  {
+    "name": "イブキ",
+    "image": "ibuki.webp"
+  },
+  {
+    "name": "イロハ",
+    "image": "iroha.webp"
+  },
+  {
+    "name": "ウイ",
+    "image": "ui.webp"
+  },
+  {
+    "name": "ウタハ",
+    "image": "utaha.webp"
+  },
+  {
+    "name": "ウミカ",
+    "image": "umika.webp"
+  },
+  {
+    "name": "エイミ",
+    "image": "eimi.webp"
+  },
+  {
+    "name": "エリカ",
+    "image": "erika.webp"
+  },
+  {
+    "name": "カエデ",
+    "image": "kaede.webp"
+  },
+  {
+    "name": "カスミ",
+    "image": "kasumi.webp"
+  },
+  {
+    "name": "カズサ",
+    "image": "kazusa.webp"
+  },
+  {
+    "name": "カホ",
+    "image": "kaho.webp"
+  },
+  {
+    "name": "カヤ",
+    "image": "kaya.webp"
+  },
+  {
+    "name": "カヨコ",
+    "image": "kayoko.webp"
+  },
+  {
+    "name": "カリン",
+    "image": "karin.webp"
+  },
+  {
+    "name": "カンナ",
+    "image": "kanna.webp"
+  },
+  {
+    "name": "キキョウ",
+    "image": "kikyou.webp"
+  },
+  {
+    "name": "キサキ",
+    "image": "kisaki.webp"
+  },
+  {
+    "name": "キララ",
+    "image": "kirara.webp"
+  },
+  {
+    "name": "キリノ",
+    "image": "kirino.webp"
+  },
+  {
+    "name": "クズノハ",
+    "image": "kuzunoha_halo.webp"
+  },
+  {
+    "name": "ココナ",
+    "image": "kokona.webp"
+  },
+  {
+    "name": "コタマ",
+    "image": "kotama.webp"
+  },
+  {
+    "name": "コトリ",
+    "image": "kotori.webp"
+  },
+  {
+    "name": "コハル",
+    "image": "koharu.webp"
+  },
+  {
+    "name": "コユキ",
+    "image": "koyuki.webp"
+  },
+  {
+    "name": "サオリ",
+    "image": "saori.webp"
+  },
+  {
+    "name": "サキ",
+    "image": "saki.webp"
+  },
+  {
+    "name": "サクラコ",
+    "image": "sakurako.webp"
+  },
+  {
+    "name": "サツキ",
+    "image": "satuki.webp"
+  },
+  {
+    "name": "サヤ",
+    "image": "saya.webp"
+  },
+  {
+    "name": "シグレ",
+    "image": "sigure.webp"
+  },
+  {
+    "name": "シズコ",
+    "image": "sizuko.webp"
+  },
+  {
+    "name": "シノン",
+    "image": "sinon.webp"
+  },
+  {
+    "name": "シミコ",
+    "image": "simiko.webp"
+  },
+  {
+    "name": "シュン",
+    "image": "syun.webp"
+  },
+  {
+    "name": "シロコ",
+    "image": "siroko.webp"
+  },
+  {
+    "name": "ジュリ",
+    "image": "zyuri.webp"
+  },
+  {
+    "name": "ジュンコ",
+    "image": "zyunko.webp"
+  },
+  {
+    "name": "スズミ",
+    "image": "suzumi.webp"
+  },
+  {
+    "name": "スミレ",
+    "image": "sumire.webp"
+  },
+  {
+    "name": "スモモ",
+    "image": "sumomo_halo.webp"
+  },
+  {
+    "name": "セイア",
+    "image": "seia.webp"
+  },
+  {
+    "name": "セナ",
+    "image": "sena.webp"
+  },
+  {
+    "name": "セリカ",
+    "image": "serika.webp"
+  },
+  {
+    "name": "セリナ",
+    "image": "serina.webp"
+  },
+  {
+    "name": "ソラ",
+    "image": "sora_halo.webp"
+  },
+  {
+    "name": "チアキ",
+    "image": "tiaki.webp"
+  },
+  {
+    "name": "チェリノ",
+    "image": "tyerino.webp"
+  },
+  {
+    "name": "チセ",
+    "image": "tise.webp"
+  },
+  {
+    "name": "チナツ",
+    "image": "tinatu.webp"
+  },
+  {
+    "name": "チヒロ",
+    "image": "tihiro.webp"
+  },
+  {
+    "name": "ツクヨ",
+    "image": "tukuyo.webp"
+  },
+  {
+    "name": "ツバキ",
+    "image": "tubaki.webp"
+  },
+  {
+    "name": "ツルギ",
+    "image": "turugi.webp"
+  },
+  {
+    "name": "トキ",
+    "image": "toki.webp"
+  },
+  {
+    "name": "トモエ",
+    "image": "tomoe.webp"
+  },
+  {
+    "name": "ナギサ",
+    "image": "nagisa.webp"
+  },
+  {
+    "name": "ナグサ",
+    "image": "nagusa.webp"
+  },
+  {
+    "name": "ナツ",
+    "image": "natu.webp"
+  },
+  {
+    "name": "ニア",
+    "image": "niya.webp"
+  },
+  {
+    "name": "ニヤ",
+    "image": "niya.webp"
+  },
+  {
+    "name": "ネル",
+    "image": "neru.webp"
+  },
+  {
+    "name": "ノア",
+    "image": "noa.webp"
+  },
+  {
+    "name": "ノゾミ",
+    "image": "nozomi.webp"
+  },
+  {
+    "name": "ノドカ",
+    "image": "nodoka.webp"
+  },
+  {
+    "name": "ノノミ",
+    "image": "nonomi.webp"
+  },
+  {
+    "name": "ハスミ",
+    "image": "hasumi.webp"
+  },
+  {
+    "name": "ハナエ",
+    "image": "hanae.webp"
+  },
+  {
+    "name": "ハナコ",
+    "image": "hanako.webp"
+  },
+  {
+    "name": "ハルカ",
+    "image": "haruka.webp"
+  },
+  {
+    "name": "ハルナ",
+    "image": "haruna.webp"
+  },
+  {
+    "name": "ハレ",
+    "image": "hare.webp"
+  },
+  {
+    "name": "ヒカリ",
+    "image": "hikari.webp"
+  },
+  {
+    "name": "ヒナ",
+    "image": "hina.webp"
+  },
+  {
+    "name": "ヒナタ",
+    "image": "hinata.webp"
+  },
+  {
+    "name": "ヒビキ",
+    "image": "hibiki.webp"
+  },
+  {
+    "name": "ヒフミ",
+    "image": "hifumi.webp"
+  },
+  {
+    "name": "ヒマリ",
+    "image": "himari.webp"
+  },
+  {
+    "name": "ヒヨリ",
+    "image": "hiyori.webp"
+  },
+  {
+    "name": "フィーナ",
+    "image": "fi-na.webp"
+  },
+  {
+    "name": "フウカ",
+    "image": "fuka.webp"
+  },
+  {
+    "name": "フブキ",
+    "image": "fubuki.webp"
+  },
+  {
+    "name": "ホシノ",
+    "image": "hosino.webp"
+  },
+  {
+    "name": "マイ",
+    "image": "mai.webp"
+  },
+  {
+    "name": "マキ",
+    "image": "maki.webp"
+  },
+  {
+    "name": "マコト",
+    "image": "makoto.webp"
+  },
+  {
+    "name": "マシロ",
+    "image": "masiro.webp"
+  },
+  {
+    "name": "マリナ",
+    "image": "marina.webp"
+  },
+  {
+    "name": "マリー",
+    "image": "mari-.webp"
+  },
+  {
+    "name": "ミカ",
+    "image": "mika.webp"
+  },
+  {
+    "name": "ミク",
+    "image": "miku_halo.webp"
+  },
+  {
+    "name": "ミサキ",
+    "image": "misaki.webp"
+  },
+  {
+    "name": "ミチル",
+    "image": "mitiru.webp"
+  },
+  {
+    "name": "ミドリ",
+    "image": "midori.webp"
+  },
+  {
+    "name": "ミナ",
+    "image": "mina.webp"
+  },
+  {
+    "name": "ミネ",
+    "image": "mine.webp"
+  },
+  {
+    "name": "ミノリ",
+    "image": "minori.webp"
+  },
+  {
+    "name": "ミモリ",
+    "image": "mimori.webp"
+  },
+  {
+    "name": "ミヤコ",
+    "image": "miyako.webp"
+  },
+  {
+    "name": "ミユ",
+    "image": "miyu.webp"
+  },
+  {
+    "name": "ムツキ",
+    "image": "mutuki.webp"
+  },
+  {
+    "name": "メグ",
+    "image": "megu.webp"
+  },
+  {
+    "name": "メル",
+    "image": "meru.webp"
+  },
+  {
+    "name": "モエ",
+    "image": "moe.webp"
+  },
+  {
+    "name": "モミジ",
+    "image": "momizi.webp"
+  },
+  {
+    "name": "モモイ",
+    "image": "momoi.webp"
+  },
+  {
+    "name": "モモカ",
+    "image": "momoka.webp"
+  },
+  {
+    "name": "ユウカ",
+    "image": "yuka.webp"
+  },
+  {
+    "name": "ユカリ",
+    "image": "yukari.webp"
+  },
+  {
+    "name": "ユキノ",
+    "image": "yukino.webp"
+  },
+  {
+    "name": "ユズ",
+    "image": "yuzu.webp"
+  },
+  {
+    "name": "ヨシミ",
+    "image": "yosimi.webp"
+  },
+  {
+    "name": "ラブ",
+    "image": "rabu.webp"
+  },
+  {
+    "name": "リオ",
+    "image": "rio.webp"
+  },
+  {
+    "name": "リン",
+    "image": "rin.webp"
+  },
+  {
+    "name": "ルミ",
+    "image": "rumi.webp"
+  },
+  {
+    "name": "レイ",
+    "image": "rei.webp"
+  },
+  {
+    "name": "レイサ",
+    "image": "reisa.webp"
+  },
+  {
+    "name": "レイジョ",
+    "image": "reijo.webp"
+  },
+  {
+    "name": "レンゲ",
+    "image": "renge.webp"
+  },
+  {
+    "name": "ワカモ",
+    "image": "wakamo.webp"
+  },
+  {
+    "name": "佐天涙子",
+    "image": "saten_memory.webp"
+  },
+  {
+    "name": "御坂美琴",
+    "image": "misaka_memory.webp"
+  }
+]
