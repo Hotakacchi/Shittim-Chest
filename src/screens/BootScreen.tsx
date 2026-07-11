@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import * as Updates from 'expo-updates';
 import { GradientTriangleBackground } from '../components/GradientTriangleBackground';
 import { ProgressRing, PROGRESS_RING_SIZE } from '../components/ProgressRing';
 import { useGlitchText } from '../hooks/useGlitchText';
@@ -61,28 +60,6 @@ export function BootScreen({ onFinish }: Props) {
     const id = progress.addListener(({ value }) => setPercent(Math.round(value)));
     return () => progress.removeListener(id);
   }, [progress]);
-
-  // Silently check for an OTA update while the boot animation plays. If one
-  // is found, fetch and apply it immediately — this restarts the app, so any
-  // in-progress boot visuals are simply replaced by the fresh launch.
-  useEffect(() => {
-    if (!Updates.isEnabled) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const result = await Updates.checkForUpdateAsync();
-        if (cancelled || !result.isAvailable) return;
-        await Updates.fetchUpdateAsync();
-        if (cancelled) return;
-        await Updates.reloadAsync();
-      } catch {
-        // Offline, dev mode, etc. — proceed with the normal boot.
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   useEffect(() => {
     Animated.loop(
