@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { ClockDisplay } from '../../components/ClockDisplay';
-import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
+import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import characters from '../../data/characters.json';
 
 // Checked before the regular time-of-day greeting — month/day is enough
@@ -61,9 +61,9 @@ export function ClockApp() {
       <Text style={styles.greeting}>{getGreeting(new Date())}</Text>
 
       <View style={styles.dutyCard}>
-        <Image source={QUIZ_IMAGES[dutyStudent.image]} style={styles.dutyImage} resizeMode="cover" />
+        <Image source={CHARACTER_IMAGES[dutyStudent.image]} style={styles.dutyImage} resizeMode="contain" />
         <View>
-          <Text style={styles.dutyLabel}>本日の日直</Text>
+          <Text style={styles.dutyLabel}>本日の当番</Text>
           <Text style={styles.dutyName}>{dutyStudent.name}</Text>
         </View>
       </View>
@@ -97,8 +97,7 @@ const styles = StyleSheet.create({
   },
   dutyImage: {
     width: 44,
-    height: 44,
-    borderRadius: 22,
+    height: 50,
   },
   dutyLabel: {
     color: colors.inkDim,
