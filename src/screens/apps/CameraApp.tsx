@@ -31,7 +31,7 @@ export function CameraApp() {
   }
 
   async function takePhoto() {
-    const photo = await cameraRef.current?.takePictureAsync();
+    const photo = await cameraRef.current?.takePictureAsync({ shutterSound: false });
     if (!photo) return;
 
     const galleryDir = new Directory(Paths.document, 'gallery');
