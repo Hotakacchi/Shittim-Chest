@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.6",
+          "buildVersion": "7",
+          "date": "2026-07-11",
+          "localizedDescription": "診断ビルド。エラー発生時にアプリごと終了してしまい表示が間に合わない不具合を修正。実際のエラー内容が画面に残るようにしました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.6/ShittimChest-unsigned.ipa",
+          "size": 8031859,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.5",
           "buildVersion": "6",
           "date": "2026-07-11",
