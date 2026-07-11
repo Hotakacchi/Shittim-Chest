@@ -4,7 +4,7 @@ import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getTodaysDutyStudent } from '../../lib/dutyStudent';
 import characters from '../../data/characters.json';
 
-const NUM_COLUMNS = 4;
+const NUM_COLUMNS = 6;
 
 export function StudentListApp() {
   const dutyStudent = getTodaysDutyStudent(new Date());
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.35)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 6,
   },
   image: {
     width: '100%',
