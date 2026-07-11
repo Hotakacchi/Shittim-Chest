@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.7",
+          "buildVersion": "8",
+          "date": "2026-07-11",
+          "localizedDescription": "expo-updates（アプリ内アップデート機能）を完全に削除し、起動しない不具合を修正しました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.7/ShittimChest-unsigned.ipa",
+          "size": 7412567,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.6",
           "buildVersion": "7",
           "date": "2026-07-11",
