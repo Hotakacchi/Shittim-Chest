@@ -3,7 +3,7 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getTodaysDutyStudent } from '../../lib/dutyStudent';
-import { getOwnedCharacters, toggleOwnedCharacter } from '../../lib/ownedCharacters';
+import { getOwnedCharacters, setOwnedCharacters, toggleOwnedCharacter } from '../../lib/ownedCharacters';
 import { StudentDetailModal } from '../../components/StudentDetailModal';
 import characters from '../../data/characters.json';
 
@@ -33,6 +33,7 @@ const LIST_DATA = buildListData();
 export function StudentListApp() {
   const [selected, setSelected] = useState<Character | null>(null);
   const [owned, setOwned] = useState<string[]>([]);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     getOwnedCharacters().then(setOwned);
@@ -44,11 +45,44 @@ export function StudentListApp() {
     toggleOwnedCharacter(image).then(setOwned);
   }
 
+  function handleSelectAll() {
+    const all = characters.map((c) => c.image);
+    setOwnedCharacters(all).then(() => setOwned(all));
+  }
+
+  function handleDeselectAll() {
+    setOwnedCharacters([]).then(() => setOwned([]));
+  }
+
   return (
     <>
-      <Text style={styles.hint}>
-        ★をタップして持っているキャラを選ぶと、本日の当番はその中から選ばれます
-      </Text>
+      <View style={styles.toolbar}>
+        <Text style={styles.hint}>
+          {editMode
+            ? 'タップして持っているキャラを選択'
+            : '★編集で持っているキャラを選ぶと、本日の当番はその中から選ばれます'}
+        </Text>
+        <View style={styles.toolbarButtons}>
+          {editMode && (
+            <>
+              <Pressable style={styles.toolbarButton} onPress={handleSelectAll}>
+                <Text style={styles.toolbarButtonLabel}>すべて選択</Text>
+              </Pressable>
+              <Pressable style={styles.toolbarButton} onPress={handleDeselectAll}>
+                <Text style={styles.toolbarButtonLabel}>すべて解除</Text>
+              </Pressable>
+            </>
+          )}
+          <Pressable
+            style={[styles.toolbarButton, editMode && styles.toolbarButtonActive]}
+            onPress={() => setEditMode((v) => !v)}
+          >
+            <Text style={[styles.toolbarButtonLabel, editMode && styles.toolbarButtonLabelActive]}>
+              {editMode ? '完了' : '編集'}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
       <FlatList
         data={LIST_DATA}
         keyExtractor={(item) => ('filler' in item ? item.key : item.image)}
@@ -62,24 +96,24 @@ export function StudentListApp() {
           const isDuty = item.image === dutyStudent.image;
           const isOwned = owned.includes(item.image);
           return (
-            <Pressable style={[styles.card, isDuty && styles.cardDuty]} onPress={() => setSelected(item)}>
+            <Pressable
+              style={[
+                styles.card,
+                isDuty && styles.cardDuty,
+                editMode && !isOwned && styles.cardUnowned,
+              ]}
+              onPress={() => (editMode ? handleToggleOwned(item.image) : setSelected(item))}
+            >
               {isDuty && (
                 <View style={styles.dutyBadge}>
                   <Text style={styles.dutyBadgeLabel}>当番</Text>
                 </View>
               )}
-              <Pressable
-                style={styles.ownedBadge}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  handleToggleOwned(item.image);
-                }}
-                hitSlop={6}
-              >
+              <View style={styles.ownedBadge}>
                 <Text style={[styles.ownedBadgeLabel, isOwned && styles.ownedBadgeLabelActive]}>
                   {isOwned ? '★' : '☆'}
                 </Text>
-              </Pressable>
+              </View>
               <View style={styles.imageWrap}>
                 <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
               </View>
@@ -98,13 +132,43 @@ export function StudentListApp() {
 }
 
 const styles = StyleSheet.create({
+  toolbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    paddingTop: 12,
+    paddingHorizontal: 16,
+  },
   hint: {
+    flex: 1,
     color: colors.inkDim,
     fontSize: 11,
     letterSpacing: 0.5,
-    textAlign: 'center',
-    paddingTop: 12,
-    paddingHorizontal: 16,
+  },
+  toolbarButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  toolbarButton: {
+    backgroundColor: colors.panelOnLight,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  toolbarButtonActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  toolbarButtonLabel: {
+    color: colors.ink,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  toolbarButtonLabelActive: {
+    color: '#ffffff',
   },
   list: {
     padding: 16,
@@ -127,6 +191,9 @@ const styles = StyleSheet.create({
   cardDuty: {
     borderWidth: 2,
     borderColor: colors.accent,
+  },
+  cardUnowned: {
+    opacity: 0.45,
   },
   dutyBadge: {
     position: 'absolute',
