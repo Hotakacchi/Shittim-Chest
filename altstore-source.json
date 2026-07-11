@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.9",
+          "buildVersion": "10",
+          "date": "2026-07-11",
+          "localizedDescription": "Blue Archiveキャラクタークイズ（声優/ヘイロー/メモロビ/苗字/誕生日/セリフ/ステータス）を追加。キャラクターの誕生日がSCHEDULEのカレンダーにも表示されるようになりました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.9/ShittimChest-unsigned.ipa",
+          "size": 13276295,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.8",
           "buildVersion": "9",
           "date": "2026-07-11",
