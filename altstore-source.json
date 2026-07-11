@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.8",
+          "buildVersion": "9",
+          "date": "2026-07-11",
+          "localizedDescription": "検証ビルド。タップ音（expo-audio）を除去し、原因の切り分けを行っています。リップルアニメーションは残っています。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.8/ShittimChest-unsigned.ipa",
+          "size": 7930497,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.7",
           "buildVersion": "8",
           "date": "2026-07-11",
