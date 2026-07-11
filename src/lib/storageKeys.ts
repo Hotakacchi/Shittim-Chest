@@ -6,4 +6,5 @@ export const STORAGE_KEYS = {
   scheduleEvents: 'shittim.schedule.events.v1',
   galleryPhotos: 'shittim.gallery.photos.v1',
   quizStats: 'shittim.quiz.stats.v1',
+  ownedCharacters: 'shittim.students.owned.v1',
 } as const;

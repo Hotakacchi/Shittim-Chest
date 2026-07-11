@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getTodaysDutyStudent } from '../../lib/dutyStudent';
+import { getOwnedCharacters, toggleOwnedCharacter } from '../../lib/ownedCharacters';
 import { StudentDetailModal } from '../../components/StudentDetailModal';
 import characters from '../../data/characters.json';
 
@@ -30,11 +31,24 @@ function buildListData(): ListEntry[] {
 const LIST_DATA = buildListData();
 
 export function StudentListApp() {
-  const dutyStudent = getTodaysDutyStudent(new Date());
   const [selected, setSelected] = useState<Character | null>(null);
+  const [owned, setOwned] = useState<string[]>([]);
+
+  useEffect(() => {
+    getOwnedCharacters().then(setOwned);
+  }, []);
+
+  const dutyStudent = getTodaysDutyStudent(new Date(), owned);
+
+  function handleToggleOwned(image: string) {
+    toggleOwnedCharacter(image).then(setOwned);
+  }
 
   return (
     <>
+      <Text style={styles.hint}>
+        ★をタップして持っているキャラを選ぶと、本日の当番はその中から選ばれます
+      </Text>
       <FlatList
         data={LIST_DATA}
         keyExtractor={(item) => ('filler' in item ? item.key : item.image)}
@@ -46,6 +60,7 @@ export function StudentListApp() {
             return <View style={styles.filler} />;
           }
           const isDuty = item.image === dutyStudent.image;
+          const isOwned = owned.includes(item.image);
           return (
             <Pressable style={[styles.card, isDuty && styles.cardDuty]} onPress={() => setSelected(item)}>
               {isDuty && (
@@ -53,6 +68,18 @@ export function StudentListApp() {
                   <Text style={styles.dutyBadgeLabel}>当番</Text>
                 </View>
               )}
+              <Pressable
+                style={styles.ownedBadge}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  handleToggleOwned(item.image);
+                }}
+                hitSlop={6}
+              >
+                <Text style={[styles.ownedBadgeLabel, isOwned && styles.ownedBadgeLabelActive]}>
+                  {isOwned ? '★' : '☆'}
+                </Text>
+              </Pressable>
               <View style={styles.imageWrap}>
                 <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
               </View>
@@ -71,6 +98,14 @@ export function StudentListApp() {
 }
 
 const styles = StyleSheet.create({
+  hint: {
+    color: colors.inkDim,
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textAlign: 'center',
+    paddingTop: 12,
+    paddingHorizontal: 16,
+  },
   list: {
     padding: 16,
   },
@@ -107,6 +142,23 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 10,
     fontWeight: '700',
+  },
+  ownedBadge: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    zIndex: 1,
+    width: 26,
+    height: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ownedBadgeLabel: {
+    color: colors.inkDim,
+    fontSize: 16,
+  },
+  ownedBadgeLabelActive: {
+    color: colors.warning,
   },
   imageWrap: {
     aspectRatio: 200 / 226,

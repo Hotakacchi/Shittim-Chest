@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { ClockDisplay } from '../../components/ClockDisplay';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getTodaysDutyStudent } from '../../lib/dutyStudent';
+import { getOwnedCharacters } from '../../lib/ownedCharacters';
 
 // Checked before the regular time-of-day greeting — month/day is enough
 // since these recur every year, no need to track by full date.
@@ -37,7 +39,13 @@ function getGreeting(date: Date): string {
 }
 
 export function ClockApp() {
-  const dutyStudent = getTodaysDutyStudent(new Date());
+  const [owned, setOwned] = useState<string[]>([]);
+
+  useEffect(() => {
+    getOwnedCharacters().then(setOwned);
+  }, []);
+
+  const dutyStudent = getTodaysDutyStudent(new Date(), owned);
 
   return (
     <View style={styles.container}>
