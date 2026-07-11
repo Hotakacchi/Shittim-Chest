@@ -1,12 +1,14 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getTodaysDutyStudent } from '../../lib/dutyStudent';
+import { StudentDetailModal } from '../../components/StudentDetailModal';
 import characters from '../../data/characters.json';
 
 const NUM_COLUMNS = 6;
 
-type Character = { name: string; image: string };
+type Character = (typeof characters)[number];
 type ListEntry = Character | { filler: true; key: string };
 
 // FlatList grid rows stretch their cards with flex:1 to fill the row width
@@ -29,38 +31,42 @@ const LIST_DATA = buildListData();
 
 export function StudentListApp() {
   const dutyStudent = getTodaysDutyStudent(new Date());
+  const [selected, setSelected] = useState<Character | null>(null);
 
   return (
-    <FlatList
-      data={LIST_DATA}
-      keyExtractor={(item) => ('filler' in item ? item.key : item.image)}
-      numColumns={NUM_COLUMNS}
-      contentContainerStyle={styles.list}
-      columnWrapperStyle={styles.row}
-      renderItem={({ item }) => {
-        if ('filler' in item) {
-          return <View style={styles.filler} />;
-        }
-        const isDuty = item.image === dutyStudent.image;
-        return (
-          <View style={[styles.card, isDuty && styles.cardDuty]}>
-            {isDuty && (
-              <View style={styles.dutyBadge}>
-                <Text style={styles.dutyBadgeLabel}>当番</Text>
+    <>
+      <FlatList
+        data={LIST_DATA}
+        keyExtractor={(item) => ('filler' in item ? item.key : item.image)}
+        numColumns={NUM_COLUMNS}
+        contentContainerStyle={styles.list}
+        columnWrapperStyle={styles.row}
+        renderItem={({ item }) => {
+          if ('filler' in item) {
+            return <View style={styles.filler} />;
+          }
+          const isDuty = item.image === dutyStudent.image;
+          return (
+            <Pressable style={[styles.card, isDuty && styles.cardDuty]} onPress={() => setSelected(item)}>
+              {isDuty && (
+                <View style={styles.dutyBadge}>
+                  <Text style={styles.dutyBadgeLabel}>当番</Text>
+                </View>
+              )}
+              <View style={styles.imageWrap}>
+                <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
               </View>
-            )}
-            <View style={styles.imageWrap}>
-              <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
-            </View>
-            <View style={[styles.nameBar, isDuty && styles.nameBarDuty]}>
-              <Text style={styles.nameText} numberOfLines={1}>
-                {item.name}
-              </Text>
-            </View>
-          </View>
-        );
-      }}
-    />
+              <View style={[styles.nameBar, isDuty && styles.nameBarDuty]}>
+                <Text style={styles.nameText} numberOfLines={1}>
+                  {item.name}
+                </Text>
+              </View>
+            </Pressable>
+          );
+        }}
+      />
+      <StudentDetailModal student={selected} onClose={() => setSelected(null)} />
+    </>
   );
 }
 
