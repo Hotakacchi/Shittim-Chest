@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
+import { loadQuizStats, recordAnswer, QuizStats } from '../../lib/quizStats';
 import actorData from '../../data/quiz/actor.json';
 import haloData from '../../data/quiz/halo.json';
 import memoryData from '../../data/quiz/memory.json';
@@ -37,7 +38,7 @@ const CATEGORIES: Category[] = [
   { key: 'status', label: 'ステータスクイズ', description: 'ステータス画面の一言から誰か当てる', data: withMode('choice', statusData) as Question[], imageAspect: 'square' },
 ];
 
-const ROUND_SIZE = 10;
+const ROUND_SIZE_OPTIONS = [5, 10, 20];
 const CHOICE_COUNT = 4;
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -51,8 +52,8 @@ function shuffle<T>(arr: T[]): T[] {
   return copy;
 }
 
-function buildRound(category: Category) {
-  const pool = shuffle(category.data).slice(0, Math.min(ROUND_SIZE, category.data.length));
+function buildRound(category: Category, roundSize: number) {
+  const pool = shuffle(category.data).slice(0, Math.min(roundSize, category.data.length));
   const uniqueAnswers =
     category.data[0]?.mode === 'choice'
       ? Array.from(new Set((category.data as ChoiceQuestion[]).map((q) => q.answer)))
@@ -65,17 +66,62 @@ function buildRound(category: Category) {
   });
 }
 
-function CategoryPicker({ onSelect }: { onSelect: (category: Category) => void }) {
+function CategoryPicker({
+  stats,
+  onSelect,
+}: {
+  stats: QuizStats;
+  onSelect: (category: Category) => void;
+}) {
   return (
     <ScrollView contentContainerStyle={styles.categoryList}>
-      {CATEGORIES.map((category) => (
-        <Pressable key={category.key} style={styles.categoryCard} onPress={() => onSelect(category)}>
-          <Text style={styles.categoryLabel}>{category.label}</Text>
-          <Text style={styles.categoryDescription}>{category.description}</Text>
-          <Text style={styles.categoryCount}>全{category.data.length}問</Text>
-        </Pressable>
-      ))}
+      {CATEGORIES.map((category) => {
+        const stat = stats[category.key];
+        const accuracy = stat && stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : null;
+        return (
+          <Pressable key={category.key} style={styles.categoryCard} onPress={() => onSelect(category)}>
+            <Text style={styles.categoryLabel}>{category.label}</Text>
+            <Text style={styles.categoryDescription}>{category.description}</Text>
+            <Text style={styles.categoryCount}>全{category.data.length}問</Text>
+            {accuracy !== null && (
+              <Text style={styles.categoryStats}>
+                累計正解率: {accuracy}%（{stat.correct}/{stat.total}問）
+              </Text>
+            )}
+          </Pressable>
+        );
+      })}
     </ScrollView>
+  );
+}
+
+function RoundSizeSelector({
+  category,
+  onSelect,
+  onBack,
+}: {
+  category: Category;
+  onSelect: (roundSize: number) => void;
+  onBack: () => void;
+}) {
+  return (
+    <View style={styles.sizeContainer}>
+      <Text style={styles.categoryLabel}>{category.label}</Text>
+      <Text style={styles.categoryDescription}>出題数を選んでください</Text>
+      <View style={styles.sizeOptions}>
+        {ROUND_SIZE_OPTIONS.filter((size) => size < category.data.length).map((size) => (
+          <Pressable key={size} style={styles.sizeButton} onPress={() => onSelect(size)}>
+            <Text style={styles.sizeButtonLabel}>{size}問</Text>
+          </Pressable>
+        ))}
+        <Pressable style={styles.sizeButton} onPress={() => onSelect(category.data.length)}>
+          <Text style={styles.sizeButtonLabel}>全{category.data.length}問</Text>
+        </Pressable>
+      </View>
+      <Pressable style={styles.secondaryButton} onPress={onBack}>
+        <Text style={styles.secondaryButtonLabel}>カテゴリ選択に戻る</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -212,8 +258,16 @@ function DateAnswer({
   );
 }
 
-function QuizRound({ category, onExit }: { category: Category; onExit: () => void }) {
-  const [round, setRound] = useState(() => buildRound(category));
+function QuizRound({
+  category,
+  roundSize,
+  onExit,
+}: {
+  category: Category;
+  roundSize: number;
+  onExit: () => void;
+}) {
+  const [round, setRound] = useState(() => buildRound(category, roundSize));
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [choiceSelected, setChoiceSelected] = useState<string | null>(null);
@@ -234,19 +288,25 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
   function handleChoice(choice: string) {
     if (current.question.mode !== 'choice' || choiceSelected !== null) return;
     setChoiceSelected(choice);
-    if (choice === current.question.answer) setScore((s) => s + 1);
+    const isCorrect = choice === current.question.answer;
+    if (isCorrect) setScore((s) => s + 1);
+    recordAnswer(category.key, isCorrect);
   }
 
   function handleText(value: string) {
     if (current.question.mode !== 'text') return;
     setTextSubmitted(value);
-    if (current.question.answers.includes(value.trim())) setScore((s) => s + 1);
+    const isCorrect = current.question.answers.includes(value.trim());
+    if (isCorrect) setScore((s) => s + 1);
+    recordAnswer(category.key, isCorrect);
   }
 
   function handleDate(value: { month: number; day: number }) {
     if (current.question.mode !== 'date') return;
     setDateSubmitted(value);
-    if (value.month === current.question.month && value.day === current.question.day) setScore((s) => s + 1);
+    const isCorrect = value.month === current.question.month && value.day === current.question.day;
+    if (isCorrect) setScore((s) => s + 1);
+    recordAnswer(category.key, isCorrect);
   }
 
   if (finished) {
@@ -259,7 +319,7 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
         <Pressable
           style={styles.primaryButton}
           onPress={() => {
-            setRound(buildRound(category));
+            setRound(buildRound(category, roundSize));
             setIndex(0);
             setScore(0);
             setChoiceSelected(null);
@@ -318,14 +378,42 @@ function QuizRound({ category, onExit }: { category: Category; onExit: () => voi
   );
 }
 
-export function QuizApp() {
-  const [category, setCategory] = useState<Category | null>(null);
+type Stage =
+  | { screen: 'picker' }
+  | { screen: 'size'; category: Category }
+  | { screen: 'round'; category: Category; roundSize: number };
 
-  if (!category) {
-    return <CategoryPicker onSelect={setCategory} />;
+export function QuizApp() {
+  const [stage, setStage] = useState<Stage>({ screen: 'picker' });
+  const [stats, setStats] = useState<QuizStats>({});
+
+  useEffect(() => {
+    if (stage.screen === 'picker') {
+      loadQuizStats().then(setStats);
+    }
+  }, [stage.screen]);
+
+  if (stage.screen === 'picker') {
+    return <CategoryPicker stats={stats} onSelect={(category) => setStage({ screen: 'size', category })} />;
   }
 
-  return <QuizRound category={category} onExit={() => setCategory(null)} />;
+  if (stage.screen === 'size') {
+    return (
+      <RoundSizeSelector
+        category={stage.category}
+        onSelect={(roundSize) => setStage({ screen: 'round', category: stage.category, roundSize })}
+        onBack={() => setStage({ screen: 'picker' })}
+      />
+    );
+  }
+
+  return (
+    <QuizRound
+      category={stage.category}
+      roundSize={stage.roundSize}
+      onExit={() => setStage({ screen: 'picker' })}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
@@ -354,6 +442,38 @@ const styles = StyleSheet.create({
     color: colors.inkDim,
     fontSize: 11,
     marginTop: 4,
+  },
+  categoryStats: {
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 6,
+  },
+  sizeContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    padding: 24,
+  },
+  sizeOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  sizeButton: {
+    backgroundColor: colors.panelOnLight,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  sizeButtonLabel: {
+    color: colors.ink,
+    fontSize: 15,
+    fontWeight: '600',
   },
   quizContainer: {
     flexGrow: 1,
