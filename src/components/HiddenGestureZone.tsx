@@ -4,9 +4,10 @@ import { GestureResponderEvent, View } from 'react-native';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
-// ↑↑↓↓→←→← — held and dragged as one continuous press, not tapped.
+// ↑↑↓↓→←→← — a sequence of separate swipes, not one continuous drag.
 const TARGET_PATTERN: Direction[] = ['up', 'up', 'down', 'down', 'right', 'left', 'right', 'left'];
-const MOVE_THRESHOLD = 35;
+const SWIPE_MIN_DISTANCE = 40;
+const SEQUENCE_TIMEOUT_MS = 2500;
 
 export function HiddenGestureZone({
   children,
@@ -17,36 +18,39 @@ export function HiddenGestureZone({
   onUnlock: () => void;
   onProgress?: (step: number, total: number) => void;
 }) {
-  const lastPoint = useRef<{ x: number; y: number } | null>(null);
+  const startPoint = useRef<{ x: number; y: number } | null>(null);
   const sequence = useRef<Direction[]>([]);
+  const lastSwipeTime = useRef(0);
 
   function report() {
     onProgress?.(sequence.current.length, TARGET_PATTERN.length);
   }
 
-  function reset() {
-    lastPoint.current = null;
-    sequence.current = [];
-    report();
-  }
-
   function handleGrant(event: GestureResponderEvent) {
     const { pageX, pageY } = event.nativeEvent;
-    lastPoint.current = { x: pageX, y: pageY };
-    sequence.current = [];
-    report();
+    startPoint.current = { x: pageX, y: pageY };
   }
 
-  function handleMove(event: GestureResponderEvent) {
-    if (!lastPoint.current) return;
+  function handleRelease(event: GestureResponderEvent) {
+    const start = startPoint.current;
+    startPoint.current = null;
+    if (!start) return;
+
     const { pageX, pageY } = event.nativeEvent;
-    const dx = pageX - lastPoint.current.x;
-    const dy = pageY - lastPoint.current.y;
-    if (Math.abs(dx) < MOVE_THRESHOLD && Math.abs(dy) < MOVE_THRESHOLD) return;
+    const dx = pageX - start.x;
+    const dy = pageY - start.y;
+    if (Math.abs(dx) < SWIPE_MIN_DISTANCE && Math.abs(dy) < SWIPE_MIN_DISTANCE) {
+      return; // too small to count as a swipe — a plain tap, ignore it
+    }
 
     const direction: Direction =
       Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
-    lastPoint.current = { x: pageX, y: pageY };
+
+    const now = Date.now();
+    if (now - lastSwipeTime.current > SEQUENCE_TIMEOUT_MS) {
+      sequence.current = [];
+    }
+    lastSwipeTime.current = now;
 
     const expected = TARGET_PATTERN[sequence.current.length];
     if (direction === expected) {
@@ -58,7 +62,7 @@ export function HiddenGestureZone({
         return;
       }
     } else {
-      // Forgiving restart: if this wrong move happens to be the pattern's
+      // Forgiving restart: if this wrong swipe happens to be the pattern's
       // first direction, treat it as a fresh attempt starting now.
       sequence.current = direction === TARGET_PATTERN[0] ? [direction] : [];
     }
@@ -68,11 +72,11 @@ export function HiddenGestureZone({
   return (
     <View
       onStartShouldSetResponder={() => true}
-      onMoveShouldSetResponder={() => true}
       onResponderGrant={handleGrant}
-      onResponderMove={handleMove}
-      onResponderRelease={reset}
-      onResponderTerminate={reset}
+      onResponderRelease={handleRelease}
+      onResponderTerminate={() => {
+        startPoint.current = null;
+      }}
     >
       {children}
     </View>
