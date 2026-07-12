@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.10",
+          "buildVersion": "11",
+          "date": "2026-07-12",
+          "localizedDescription": "Blue Archiveキャラクターリスト(265人)を追加。クイズやカレンダーも更新しました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.10/ShittimChest-unsigned.ipa",
+          "size": 18090534,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.9",
           "buildVersion": "10",
           "date": "2026-07-11",
