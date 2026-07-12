@@ -3,7 +3,13 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
-import { loadQuizStats, recordAnswer, QuizStats } from '../../lib/quizStats';
+import {
+  loadQuizStats,
+  recordAnswer,
+  loadFullRoundBest,
+  recordFullRoundResult,
+  QuizStats,
+} from '../../lib/quizStats';
 import actorData from '../../data/quiz/actor.json';
 import haloData from '../../data/quiz/halo.json';
 import memoryData from '../../data/quiz/memory.json';
@@ -74,9 +80,11 @@ function buildRound(category: Category, roundSize: number) {
 
 function CategoryPicker({
   stats,
+  fullRoundStats,
   onSelect,
 }: {
   stats: QuizStats;
+  fullRoundStats: QuizStats;
   onSelect: (category: Category) => void;
 }) {
   return (
@@ -84,6 +92,7 @@ function CategoryPicker({
       {CATEGORIES.map((category) => {
         const stat = stats[category.key];
         const accuracy = stat && stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : null;
+        const fullRound = fullRoundStats[category.key];
         return (
           <Pressable key={category.key} style={styles.categoryCard} onPress={() => onSelect(category)}>
             <Text style={styles.categoryLabel}>{category.label}</Text>
@@ -92,6 +101,11 @@ function CategoryPicker({
             {accuracy !== null && (
               <Text style={styles.categoryStats}>
                 累計正解率: {accuracy}%（{stat.correct}/{stat.total}問）
+              </Text>
+            )}
+            {fullRound && (
+              <Text style={styles.fullRoundStats}>
+                全問ベスト: {fullRound.correct}/{fullRound.total}問
               </Text>
             )}
           </Pressable>
@@ -283,6 +297,16 @@ function QuizRound({
   const current = round[index];
   const finished = index >= round.length;
   const answered = choiceSelected !== null || textSubmitted !== null || dateSubmitted !== null;
+  const isFullRound = roundSize >= category.data.length;
+
+  useEffect(() => {
+    if (finished && isFullRound) {
+      recordFullRoundResult(category.key, score, round.length);
+    }
+    // Only fires once per completed round — `finished` flips from false to
+    // true exactly once before もう一度/カテゴリ選択に戻る resets or leaves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished]);
 
   function next() {
     setChoiceSelected(null);
@@ -392,15 +416,23 @@ type Stage =
 export function QuizApp() {
   const [stage, setStage] = useState<Stage>({ screen: 'picker' });
   const [stats, setStats] = useState<QuizStats>({});
+  const [fullRoundStats, setFullRoundStats] = useState<QuizStats>({});
 
   useEffect(() => {
     if (stage.screen === 'picker') {
       loadQuizStats().then(setStats);
+      loadFullRoundBest().then(setFullRoundStats);
     }
   }, [stage.screen]);
 
   if (stage.screen === 'picker') {
-    return <CategoryPicker stats={stats} onSelect={(category) => setStage({ screen: 'size', category })} />;
+    return (
+      <CategoryPicker
+        stats={stats}
+        fullRoundStats={fullRoundStats}
+        onSelect={(category) => setStage({ screen: 'size', category })}
+      />
+    );
   }
 
   if (stage.screen === 'size') {
@@ -454,6 +486,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     marginTop: 6,
+  },
+  fullRoundStats: {
+    color: colors.warning,
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
   },
   sizeContainer: {
     flex: 1,
