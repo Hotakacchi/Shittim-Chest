@@ -68,12 +68,23 @@ export function BootScreen({ onFinish }: Props) {
   // or another — the boot sequence's progress step awaits this instead of
   // running on a fixed timer, so the loading screen's actual length tracks
   // how long checking/downloading really took.
+  //
+  // The `if (!ref.current)` guard matters here: a useRef(new Promise(...))
+  // initializer expression is still evaluated on every render (React only
+  // discards the *result* after mount), which was silently creating a fresh
+  // Promise each re-render and repointing updateSettledResolve.current at
+  // it — the original `updateSettled` that `run()` actually awaits then
+  // never got resolved, since resolve() below is called from the
+  // OTA-check effect and only ever targets whichever Promise the ref last
+  // pointed to.
   const updateSettledResolve = useRef<() => void>(() => {});
-  const updateSettled = useRef(
-    new Promise<void>((resolve) => {
+  const updateSettledRef = useRef<Promise<void> | undefined>(undefined);
+  if (!updateSettledRef.current) {
+    updateSettledRef.current = new Promise<void>((resolve) => {
       updateSettledResolve.current = resolve;
-    }),
-  ).current;
+    });
+  }
+  const updateSettled = updateSettledRef.current;
 
   const updatesState = Updates.useUpdates();
 
