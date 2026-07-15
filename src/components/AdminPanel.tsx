@@ -3,6 +3,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Updates from 'expo-updates';
 import { colors } from '../theme/colors';
+import { useSystemError } from '../lib/systemErrorScreen';
 import appConfig from '../../app.json';
 
 type StorageSummary = { keyCount: number; totalBytes: number };
@@ -35,6 +36,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 export function AdminPanel({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const [storage, setStorage] = useState<StorageSummary | null>(null);
+  const { activate: activateSystemError } = useSystemError();
 
   useEffect(() => {
     if (visible) {
@@ -81,6 +83,20 @@ export function AdminPanel({ visible, onClose }: { visible: boolean; onClose: ()
               label="使用量（概算）"
               value={storage ? `約${(storage.totalBytes / 1024).toFixed(1)} KB` : '読込中…'}
             />
+
+            <Text style={styles.sectionLabel}>いたずら</Text>
+            <Pressable
+              style={styles.dangerButton}
+              onPress={() => {
+                activateSystemError();
+                onClose();
+              }}
+            >
+              <Text style={styles.dangerButtonLabel}>エラー画面を表示</Text>
+            </Pressable>
+            <Text style={styles.dangerHint}>
+              解除するにはこの端末で管理者画面と同じ隠しコマンド（↑↑↓↓→←→←）を入力してください。
+            </Text>
           </ScrollView>
         </View>
       </View>
@@ -159,5 +175,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     flexShrink: 1,
     textAlign: 'right',
+  },
+  dangerButton: {
+    backgroundColor: 'rgba(255, 93, 108, 0.25)',
+    borderWidth: 1,
+    borderColor: colors.danger,
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  dangerButtonLabel: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  dangerHint: {
+    color: colors.textDim,
+    fontSize: 11,
+    lineHeight: 16,
   },
 });

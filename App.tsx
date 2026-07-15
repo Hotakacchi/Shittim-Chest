@@ -6,10 +6,12 @@ import { useIsTablet } from './src/hooks/useIsTablet';
 import { BootScreen } from './src/screens/BootScreen';
 import { OSHomeScreen } from './src/screens/OSHomeScreen';
 import { RejectionScreen } from './src/screens/RejectionScreen';
+import { SystemErrorScreen } from './src/screens/SystemErrorScreen';
+import { SystemErrorProvider } from './src/lib/systemErrorScreen';
 import { STORAGE_KEYS } from './src/lib/storageKeys';
 import { colors } from './src/theme/colors';
 
-export default function App() {
+function AppContent() {
   const isTablet = useIsTablet();
   const [booted, setBooted] = useState(false);
   const [skipBoot, setSkipBoot] = useState<boolean | null>(null);
@@ -28,4 +30,13 @@ export default function App() {
     return <BootScreen onFinish={() => setBooted(true)} />;
   }
   return isTablet ? <OSHomeScreen /> : <RejectionScreen />;
+}
+
+export default function App() {
+  return (
+    <SystemErrorProvider>
+      <AppContent />
+      <SystemErrorScreen />
+    </SystemErrorProvider>
+  );
 }

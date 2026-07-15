@@ -9,4 +9,5 @@ export const STORAGE_KEYS = {
   fullRoundBest: 'shittim.quiz.fullRoundBest.v1',
   ownedCharacters: 'shittim.students.owned.v1',
   dutyStudent: 'shittim.students.duty.v1',
+  systemErrorActive: 'shittim.system.errorActive.v1',
 } as const;
