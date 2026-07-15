@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Updates from 'expo-updates';
 import { GradientTriangleBackground } from '../components/GradientTriangleBackground';
 import { ProgressRing, PROGRESS_RING_SIZE } from '../components/ProgressRing';
 import { useGlitchText } from '../hooks/useGlitchText';
+import { STORAGE_KEYS } from '../lib/storageKeys';
 
 const haloIcon = require('../../assets/boot/arona-halo.png');
 const heartIcon = require('../../assets/boot/arona-heart.png');
@@ -62,26 +64,61 @@ export function BootScreen({ onFinish }: Props) {
     return () => progress.removeListener(id);
   }, [progress]);
 
+  // Resolved once the update check (and download, if any) concludes one way
+  // or another — the boot sequence's progress step awaits this instead of
+  // running on a fixed timer, so the loading screen's actual length tracks
+  // how long checking/downloading really took.
+  const updateSettledResolve = useRef<() => void>(() => {});
+  const updateSettled = useRef(
+    new Promise<void>((resolve) => {
+      updateSettledResolve.current = resolve;
+    }),
+  ).current;
+
+  const updatesState = Updates.useUpdates();
+
+  // While an update is actually downloading, drive the ring from the real
+  // byte progress instead of a cosmetic animation.
+  useEffect(() => {
+    if (updatesState.isDownloading && updatesState.downloadProgress !== undefined) {
+      progress.setValue(20 + updatesState.downloadProgress * 70);
+    }
+  }, [updatesState.isDownloading, updatesState.downloadProgress, progress]);
+
   // Silently check for an OTA update while the boot animation plays. If one
   // is found, fetch and apply it immediately — this restarts the app, so any
   // in-progress boot visuals are simply replaced by the fresh launch.
   useEffect(() => {
-    if (!Updates.isEnabled) return;
+    if (!Updates.isEnabled) {
+      updateSettledResolve.current();
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
         const result = await Updates.checkForUpdateAsync();
-        if (cancelled || !result.isAvailable) return;
+        if (cancelled) return;
+        if (!result.isAvailable) {
+          updateSettledResolve.current();
+          return;
+        }
         await Updates.fetchUpdateAsync();
         if (cancelled) return;
+        // reloadAsync() restarts the JS context, so this same boot animation
+        // would otherwise play a second time right after the first. Skip it
+        // just this once on the reload that follows.
+        await AsyncStorage.setItem(STORAGE_KEYS.skipBootOnce, 'true');
         await Updates.reloadAsync();
+        // App restarts here — no need to resolve; this instance is done.
       } catch {
         // Offline, dev mode, etc. — proceed with the normal boot.
+        updateSettledResolve.current();
       }
     })();
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -112,7 +149,15 @@ export function BootScreen({ onFinish }: Props) {
       if (cancelled) return;
 
       animate(bgOpacity, 1, 800, true);
-      await animate(progress, 100, 1400);
+      await animate(progress, 20, 400);
+      if (cancelled) return;
+
+      // Holds here for as long as the real update check/download takes —
+      // instant when there's nothing to fetch, longer when there is.
+      await Promise.all([updateSettled, wait(400)]);
+      if (cancelled) return;
+
+      await animate(progress, 100, 300);
       if (cancelled) return;
 
       setIconMode('heart');

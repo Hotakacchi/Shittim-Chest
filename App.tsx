@@ -17,8 +17,14 @@ function AppContent() {
   const [skipBoot, setSkipBoot] = useState<boolean | null>(null);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEYS.skipBootAnimation).then((value) => {
-      setSkipBoot(value === 'true');
+    Promise.all([
+      AsyncStorage.getItem(STORAGE_KEYS.skipBootAnimation),
+      AsyncStorage.getItem(STORAGE_KEYS.skipBootOnce),
+    ]).then(([persistent, once]) => {
+      setSkipBoot(persistent === 'true' || once === 'true');
+      if (once === 'true') {
+        AsyncStorage.removeItem(STORAGE_KEYS.skipBootOnce);
+      }
     });
     ScreenOrientation.unlockAsync();
   }, []);
