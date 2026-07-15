@@ -15,12 +15,10 @@ export function SystemErrorScreen() {
   if (!active) return null;
 
   return (
-    <HiddenGestureZone onUnlock={deactivate}>
-      <View style={styles.overlay}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-        <Text style={styles.message}>この端末は現在ロックされています。</Text>
-      </View>
+    <HiddenGestureZone onUnlock={deactivate} style={styles.overlay}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
+      <Text style={styles.message}>この端末は現在ロックされています。</Text>
     </HiddenGestureZone>
   );
 }

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
-import { GestureResponderEvent, View } from 'react-native';
+import { GestureResponderEvent, StyleProp, View, ViewStyle } from 'react-native';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -9,7 +9,15 @@ const TARGET_PATTERN: Direction[] = ['up', 'up', 'down', 'down', 'right', 'left'
 const SWIPE_MIN_DISTANCE = 40;
 const SEQUENCE_TIMEOUT_MS = 2500;
 
-export function HiddenGestureZone({ children, onUnlock }: { children: ReactNode; onUnlock: () => void }) {
+export function HiddenGestureZone({
+  children,
+  onUnlock,
+  style,
+}: {
+  children: ReactNode;
+  onUnlock: () => void;
+  style?: StyleProp<ViewStyle>;
+}) {
   const startPoint = useRef<{ x: number; y: number } | null>(null);
   const sequence = useRef<Direction[]>([]);
   const lastSwipeTime = useRef(0);
@@ -57,6 +65,7 @@ export function HiddenGestureZone({ children, onUnlock }: { children: ReactNode;
 
   return (
     <View
+      style={style}
       onStartShouldSetResponder={() => true}
       onResponderGrant={handleGrant}
       onResponderRelease={handleRelease}
