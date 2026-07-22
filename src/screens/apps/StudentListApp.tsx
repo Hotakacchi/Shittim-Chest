@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { BackHandler, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
@@ -31,12 +31,63 @@ function buildListData(): ListEntry[] {
 
 const LIST_DATA = buildListData();
 
+// Memoized so a state change elsewhere (owned/editMode/dutyStudent) only
+// re-renders the cards whose own props actually changed, instead of all
+// ~200 cards on every toggle — the FlatList re-render cost was the main
+// source of the choppy scrolling reported on Android.
+const StudentCard = memo(function StudentCard({
+  item,
+  isDuty,
+  isOwned,
+  editMode,
+  dutyLabel,
+  onPress,
+}: {
+  item: Character;
+  isDuty: boolean;
+  isOwned: boolean;
+  editMode: boolean;
+  dutyLabel: string;
+  onPress: (item: Character) => void;
+}) {
+  return (
+    <Pressable
+      style={[styles.card, isDuty && styles.cardDuty, editMode && !isOwned && styles.cardUnowned]}
+      onPress={() => onPress(item)}
+    >
+      {isDuty && (
+        <View style={styles.dutyBadge}>
+          <Text style={styles.dutyBadgeLabel}>{dutyLabel}</Text>
+        </View>
+      )}
+      <View style={styles.ownedBadge}>
+        <Text style={[styles.ownedBadgeLabel, isOwned && styles.ownedBadgeLabelActive]}>
+          {isOwned ? '★' : '☆'}
+        </Text>
+      </View>
+      <View style={styles.imageWrap}>
+        <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
+      </View>
+      <View style={[styles.nameBar, isDuty && styles.nameBarDuty]}>
+        <Text style={styles.nameText} numberOfLines={1}>
+          {item.name}
+        </Text>
+      </View>
+    </Pressable>
+  );
+});
+
 export function StudentListApp() {
   const { t } = useLanguage();
   const [selected, setSelected] = useState<Character | null>(null);
   const [owned, setOwned] = useState<string[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [dutyStudent, setDutyStudent] = useState<Character | null>(null);
+  const editModeRef = useRef(editMode);
+
+  useEffect(() => {
+    editModeRef.current = editMode;
+  }, [editMode]);
 
   useEffect(() => {
     getOwnedCharacters().then((initialOwned) => {
@@ -69,6 +120,38 @@ export function StudentListApp() {
   function handleDeselectAll() {
     setOwnedCharacters([]).then(() => setOwned([]));
   }
+
+  // Stable across renders (empty deps) so it doesn't defeat StudentCard's
+  // memoization — editMode is read via a ref instead of a closure variable.
+  const handleCardPress = useCallback((item: Character) => {
+    if (editModeRef.current) {
+      handleToggleOwned(item.image);
+    } else {
+      setSelected(item);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const dutyLabel = t('students.dutyBadge');
+
+  const renderItem = useCallback(
+    ({ item }: { item: ListEntry }) => {
+      if ('filler' in item) {
+        return <View style={styles.filler} />;
+      }
+      return (
+        <StudentCard
+          item={item}
+          isDuty={item.image === dutyStudent?.image}
+          isOwned={owned.includes(item.image)}
+          editMode={editMode}
+          dutyLabel={dutyLabel}
+          onPress={handleCardPress}
+        />
+      );
+    },
+    [dutyStudent, owned, editMode, dutyLabel, handleCardPress],
+  );
 
   return (
     <>
@@ -103,42 +186,11 @@ export function StudentListApp() {
         numColumns={NUM_COLUMNS}
         contentContainerStyle={styles.list}
         columnWrapperStyle={styles.row}
-        renderItem={({ item }) => {
-          if ('filler' in item) {
-            return <View style={styles.filler} />;
-          }
-          const isDuty = item.image === dutyStudent?.image;
-          const isOwned = owned.includes(item.image);
-          return (
-            <Pressable
-              style={[
-                styles.card,
-                isDuty && styles.cardDuty,
-                editMode && !isOwned && styles.cardUnowned,
-              ]}
-              onPress={() => (editMode ? handleToggleOwned(item.image) : setSelected(item))}
-            >
-              {isDuty && (
-                <View style={styles.dutyBadge}>
-                  <Text style={styles.dutyBadgeLabel}>{t('students.dutyBadge')}</Text>
-                </View>
-              )}
-              <View style={styles.ownedBadge}>
-                <Text style={[styles.ownedBadgeLabel, isOwned && styles.ownedBadgeLabelActive]}>
-                  {isOwned ? '★' : '☆'}
-                </Text>
-              </View>
-              <View style={styles.imageWrap}>
-                <Image source={CHARACTER_IMAGES[item.image]} style={styles.image} resizeMode="contain" />
-              </View>
-              <View style={[styles.nameBar, isDuty && styles.nameBarDuty]}>
-                <Text style={styles.nameText} numberOfLines={1}>
-                  {item.name}
-                </Text>
-              </View>
-            </Pressable>
-          );
-        }}
+        renderItem={renderItem}
+        removeClippedSubviews
+        maxToRenderPerBatch={12}
+        windowSize={7}
+        initialNumToRender={24}
       />
       <StudentDetailModal student={selected} onClose={() => setSelected(null)} />
     </>

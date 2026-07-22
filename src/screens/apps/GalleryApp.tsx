@@ -53,6 +53,7 @@ export function GalleryApp() {
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLUMNS}
         contentContainerStyle={styles.grid}
+        removeClippedSubviews
         ListEmptyComponent={<Text style={styles.empty}>{t('gallery.empty')}</Text>}
         renderItem={({ item }) => (
           <Pressable style={styles.thumbWrap} onPress={() => setViewing(item)}>
