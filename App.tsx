@@ -8,6 +8,7 @@ import { OSHomeScreen } from './src/screens/OSHomeScreen';
 import { RejectionScreen } from './src/screens/RejectionScreen';
 import { SystemErrorScreen } from './src/screens/SystemErrorScreen';
 import { SystemErrorProvider } from './src/lib/systemErrorScreen';
+import { LanguageProvider } from './src/i18n';
 import { STORAGE_KEYS } from './src/lib/storageKeys';
 import { colors } from './src/theme/colors';
 
@@ -40,9 +41,11 @@ function AppContent() {
 
 export default function App() {
   return (
-    <SystemErrorProvider>
-      <AppContent />
-      <SystemErrorScreen />
-    </SystemErrorProvider>
+    <LanguageProvider>
+      <SystemErrorProvider>
+        <AppContent />
+        <SystemErrorScreen />
+      </SystemErrorProvider>
+    </LanguageProvider>
   );
 }

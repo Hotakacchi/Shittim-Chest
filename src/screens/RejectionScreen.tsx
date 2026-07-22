@@ -1,21 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../theme/colors';
+import { useLanguage } from '../i18n';
 
 export function RejectionScreen() {
+  const { t } = useLanguage();
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.panel}>
-        <Text style={styles.errorCode}>ACCESS DENIED — E0x600</Text>
-        <Text style={styles.message}>
-          先生、申し訳ありませんが……{'\n'}
-          「シッテムの箱」はタブレット専用端末です。
-        </Text>
-        <Text style={styles.sub}>
-          このOSはより大きな画面でしか起動できません。{'\n'}
-          お手持ちのタブレット端末でお試しください。
-        </Text>
+        <Text style={styles.errorCode}>{t('rejection.errorCode')}</Text>
+        <Text style={styles.message}>{t('rejection.message')}</Text>
+        <Text style={styles.sub}>{t('rejection.sub')}</Text>
       </View>
     </View>
   );

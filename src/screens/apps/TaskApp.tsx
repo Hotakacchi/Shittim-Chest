@@ -10,6 +10,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
+import { useLanguage } from '../../i18n';
 
 type Task = {
   id: string;
@@ -18,6 +19,7 @@ type Task = {
 };
 
 export function TaskApp() {
+  const { t } = useLanguage();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [draft, setDraft] = useState('');
   const loaded = useRef(false);
@@ -60,7 +62,7 @@ export function TaskApp() {
   return (
     <View style={styles.container}>
       <Text style={styles.summary}>
-        本日の任務 — 残り{remaining}件 / 全{tasks.length}件
+        {t('task.summary', { remaining, total: tasks.length })}
       </Text>
 
       <View style={styles.inputRow}>
@@ -68,13 +70,13 @@ export function TaskApp() {
           value={draft}
           onChangeText={setDraft}
           onSubmitEditing={addTask}
-          placeholder="新しい任務を入力…"
+          placeholder={t('task.inputPlaceholder')}
           placeholderTextColor={colors.inkDim}
           style={styles.input}
           returnKeyType="done"
         />
         <Pressable style={styles.addButton} onPress={addTask}>
-          <Text style={styles.addLabel}>追加</Text>
+          <Text style={styles.addLabel}>{t('common.add')}</Text>
         </Pressable>
       </View>
 
@@ -83,7 +85,7 @@ export function TaskApp() {
         keyExtractor={(item) => item.id}
         style={styles.list}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text style={styles.empty}>任務はまだありません</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t('task.empty')}</Text>}
         renderItem={({ item }) => (
           <View style={styles.taskRow}>
             <Pressable

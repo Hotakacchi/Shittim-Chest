@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
-import { WEEKDAYS_JA, getMonthMatrix, isSameDay, isSameMonth, toDateKey } from '../lib/dateUtils';
+import { getMonthMatrix, isSameDay, isSameMonth, toDateKey } from '../lib/dateUtils';
+import { useLanguage, WEEKDAYS } from '../i18n';
 
 type Props = {
   month: Date;
@@ -19,6 +20,7 @@ export function MonthCalendar({
   onNextMonth,
   markedDateKeys,
 }: Props) {
+  const { t, language } = useLanguage();
   const weeks = getMonthMatrix(month.getFullYear(), month.getMonth());
   const today = new Date();
 
@@ -29,7 +31,7 @@ export function MonthCalendar({
           <Text style={styles.navLabel}>‹</Text>
         </Pressable>
         <Text style={styles.monthLabel}>
-          {month.getFullYear()}年{month.getMonth() + 1}月
+          {t('common.monthLabel', { year: month.getFullYear(), month: month.getMonth() + 1 })}
         </Text>
         <Pressable style={styles.navButton} onPress={onNextMonth} hitSlop={8}>
           <Text style={styles.navLabel}>›</Text>
@@ -37,7 +39,7 @@ export function MonthCalendar({
       </View>
 
       <View style={styles.weekRow}>
-        {WEEKDAYS_JA.map((w, i) => (
+        {WEEKDAYS[language].map((w, i) => (
           <Text
             key={w}
             style={[

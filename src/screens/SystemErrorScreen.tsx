@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { HiddenGestureZone } from '../components/HiddenGestureZone';
 import { useGlitchText } from '../hooks/useGlitchText';
 import { useSystemError } from '../lib/systemErrorScreen';
+import { useLanguage } from '../i18n';
 import { colors } from '../theme/colors';
 
 const TITLE = 'SYSTEM LOCKED';
@@ -9,6 +10,7 @@ const SUBTITLE = 'ERROR CODE E0xDEAD';
 
 export function SystemErrorScreen() {
   const { active, deactivate } = useSystemError();
+  const { t } = useLanguage();
   const title = useGlitchText(TITLE, active);
   const subtitle = useGlitchText(SUBTITLE, active);
 
@@ -18,7 +20,7 @@ export function SystemErrorScreen() {
     <HiddenGestureZone onUnlock={deactivate} style={styles.overlay}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
-      <Text style={styles.message}>この端末は現在ロックされています。</Text>
+      <Text style={styles.message}>{t('systemError.message')}</Text>
     </HiddenGestureZone>
   );
 }

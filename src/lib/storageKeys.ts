@@ -11,4 +11,5 @@ export const STORAGE_KEYS = {
   ownedCharacters: 'shittim.students.owned.v1',
   dutyStudent: 'shittim.students.duty.v1',
   systemErrorActive: 'shittim.system.errorActive.v1',
+  language: 'shittim.settings.language',
 } as const;

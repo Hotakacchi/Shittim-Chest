@@ -7,11 +7,13 @@ import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
 import { HiddenGestureZone } from '../../components/HiddenGestureZone';
 import { AdminPanel } from '../../components/AdminPanel';
+import { useLanguage, LANGUAGE_NAMES, Language } from '../../i18n';
 import appConfig from '../../../app.json';
 
 type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'upToDate' | 'error';
 
 function UpdateSection() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState<UpdateStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -26,10 +28,8 @@ function UpdateSection() {
     return (
       <View style={styles.row}>
         <View style={styles.rowText}>
-          <Text style={styles.rowLabel}>アップデート</Text>
-          <Text style={styles.rowDescription}>
-            この機能はビルド版でのみ利用できます（Expo Go/開発中は無効）
-          </Text>
+          <Text style={styles.rowLabel}>{t('system.updateLabel')}</Text>
+          <Text style={styles.rowDescription}>{t('system.updateUnavailable')}</Text>
         </View>
       </View>
     );
@@ -60,12 +60,12 @@ function UpdateSection() {
   }
 
   const statusLabel: Record<UpdateStatus, string> = {
-    idle: `チャンネル: ${Updates.channel ?? '未設定'}`,
-    checking: '確認中…',
-    available: '別バージョンが見つかりました',
-    downloading: '更新をダウンロード中…',
-    upToDate: '最新の状態です',
-    error: `エラー: ${errorMessage}`,
+    idle: t('system.updateIdle', { channel: Updates.channel ?? t('common.notSet') }),
+    checking: t('system.updateChecking'),
+    available: t('system.updateAvailable'),
+    downloading: t('system.updateDownloading'),
+    upToDate: t('system.updateUpToDate'),
+    error: t('system.updateError', { message: errorMessage }),
   };
 
   const busy = status === 'checking' || status === 'downloading';
@@ -73,7 +73,7 @@ function UpdateSection() {
   return (
     <View style={styles.row}>
       <View style={styles.rowText}>
-        <Text style={styles.rowLabel}>アップデート</Text>
+        <Text style={styles.rowLabel}>{t('system.updateLabel')}</Text>
         <Text style={styles.rowDescription}>{statusLabel[status]}</Text>
       </View>
       <Pressable
@@ -82,7 +82,7 @@ function UpdateSection() {
         disabled={busy}
       >
         <Text style={styles.updateButtonLabel}>
-          {status === 'available' ? '適用する' : '確認する'}
+          {status === 'available' ? t('system.updateApply') : t('system.updateCheck')}
         </Text>
       </Pressable>
     </View>
@@ -99,18 +99,19 @@ function formatUpdateTimestamp(date: Date): string {
 }
 
 function CurrentUpdateInfo() {
+  const { t } = useLanguage();
   if (!Updates.isEnabled) return null;
 
   const detailLine = Updates.isEmbeddedLaunch
-    ? 'ネイティブビルドに内蔵された内容で起動中'
+    ? t('system.currentStatusEmbedded')
     : Updates.createdAt
-      ? `${formatUpdateTimestamp(Updates.createdAt)} 公開分を適用中`
-      : '適用中のOTA更新の詳細は不明';
+      ? t('system.currentStatusPublished', { date: formatUpdateTimestamp(Updates.createdAt) })
+      : t('system.currentStatusUnknown');
 
   return (
     <View style={styles.row}>
       <View style={styles.rowText}>
-        <Text style={styles.rowLabel}>現在の適用状況</Text>
+        <Text style={styles.rowLabel}>{t('system.currentStatusLabel')}</Text>
         <Text style={styles.rowDescription}>{detailLine}</Text>
         {!Updates.isEmbeddedLaunch && Updates.updateId && (
           <Text style={styles.rowDescription}>ID: {Updates.updateId.slice(0, 8)}</Text>
@@ -147,7 +148,40 @@ function SettingRow({
   );
 }
 
+const LANGUAGE_OPTIONS: Language[] = ['ja', 'en', 'ko', 'zh'];
+
+function LanguageRow() {
+  const { language, setLanguage, t } = useLanguage();
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>{t('system.languageLabel')}</Text>
+        <Text style={styles.rowDescription}>{t('system.languageDesc')}</Text>
+      </View>
+      <View style={styles.languageOptions}>
+        {LANGUAGE_OPTIONS.map((option) => (
+          <Pressable
+            key={option}
+            style={[styles.languageChip, language === option && styles.languageChipActive]}
+            onPress={() => setLanguage(option)}
+          >
+            <Text
+              style={[
+                styles.languageChipLabel,
+                language === option && styles.languageChipLabelActive,
+              ]}
+            >
+              {LANGUAGE_NAMES[option]}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export function SystemApp() {
+  const { t } = useLanguage();
   const [keepAwake, setKeepAwake] = useState(false);
   const [skipBoot, setSkipBoot] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -184,17 +218,18 @@ export function SystemApp() {
   return (
     <View style={styles.container}>
       <SettingRow
-        label="常時点灯"
-        description="画面が自動で消灯しないようにします"
+        label={t('system.keepAwakeLabel')}
+        description={t('system.keepAwakeDesc')}
         value={keepAwake}
         onChange={onChangeKeepAwake}
       />
       <SettingRow
-        label="起動アニメーションをスキップ"
-        description="次回起動時からシッテムの箱の起動演出を省略します"
+        label={t('system.skipBootLabel')}
+        description={t('system.skipBootDesc')}
         value={skipBoot}
         onChange={onChangeSkipBoot}
       />
+      <LanguageRow />
 
       <UpdateSection />
       <HiddenGestureZone onUnlock={() => setShowAdmin(true)}>
@@ -202,7 +237,9 @@ export function SystemApp() {
       </HiddenGestureZone>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>シッテムの箱 v{appConfig.expo.version}</Text>
+        <Text style={styles.footerText}>
+          {t('system.footer', { version: appConfig.expo.version })}
+        </Text>
       </View>
 
       <AdminPanel visible={showAdmin} onClose={() => setShowAdmin(false)} />
@@ -251,6 +288,32 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  languageOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    justifyContent: 'flex-end',
+  },
+  languageChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: colors.panel,
+    borderWidth: 1,
+    borderColor: colors.panelBorderOnLight,
+  },
+  languageChipActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  languageChipLabel: {
+    color: colors.ink,
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  languageChipLabelActive: {
+    color: '#ffffff',
   },
   footer: {
     marginTop: 'auto',

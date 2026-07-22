@@ -4,10 +4,12 @@ import { File } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import { colors } from '../../theme/colors';
 import { GalleryPhoto, getGalleryPhotos, removeGalleryPhoto } from '../../lib/galleryStore';
+import { useLanguage } from '../../i18n';
 
 const NUM_COLUMNS = 4;
 
 export function GalleryApp() {
+  const { t } = useLanguage();
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [viewing, setViewing] = useState<GalleryPhoto | null>(null);
 
@@ -33,14 +35,14 @@ export function GalleryApp() {
   async function handleSaveToDevice(photo: GalleryPhoto) {
     const permission = await MediaLibrary.requestPermissionsAsync(true);
     if (!permission.granted) {
-      Alert.alert('保存できません', '写真を保存するにはフォトライブラリへのアクセスを許可してください。');
+      Alert.alert(t('gallery.saveDeniedTitle'), t('gallery.saveDeniedMessage'));
       return;
     }
     try {
       await MediaLibrary.saveToLibraryAsync(photo.uri);
-      Alert.alert('保存しました', '端末のフォトライブラリに保存しました。');
+      Alert.alert(t('gallery.savedTitle'), t('gallery.savedMessage'));
     } catch {
-      Alert.alert('保存できません', '写真の保存中にエラーが発生しました。');
+      Alert.alert(t('gallery.saveDeniedTitle'), t('gallery.saveErrorMessage'));
     }
   }
 
@@ -51,7 +53,7 @@ export function GalleryApp() {
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLUMNS}
         contentContainerStyle={styles.grid}
-        ListEmptyComponent={<Text style={styles.empty}>まだ写真がありません</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t('gallery.empty')}</Text>}
         renderItem={({ item }) => (
           <Pressable style={styles.thumbWrap} onPress={() => setViewing(item)}>
             <Image source={{ uri: item.uri }} style={styles.thumb} />
@@ -71,14 +73,14 @@ export function GalleryApp() {
           )}
           <View style={styles.modalControls}>
             <Pressable style={styles.modalButton} onPress={() => setViewing(null)}>
-              <Text style={styles.modalButtonLabel}>閉じる</Text>
+              <Text style={styles.modalButtonLabel}>{t('common.close')}</Text>
             </Pressable>
             {viewing && (
               <Pressable
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={() => handleSaveToDevice(viewing)}
               >
-                <Text style={styles.modalButtonLabel}>端末に保存</Text>
+                <Text style={styles.modalButtonLabel}>{t('gallery.saveToDevice')}</Text>
               </Pressable>
             )}
             {viewing && (
@@ -86,7 +88,7 @@ export function GalleryApp() {
                 style={[styles.modalButton, styles.deleteButton]}
                 onPress={() => handleDelete(viewing)}
               >
-                <Text style={styles.modalButtonLabel}>削除</Text>
+                <Text style={styles.modalButtonLabel}>{t('common.delete')}</Text>
               </Pressable>
             )}
           </View>

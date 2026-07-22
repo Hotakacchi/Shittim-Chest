@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Updates from 'expo-updates';
 import { colors } from '../theme/colors';
 import { useSystemError } from '../lib/systemErrorScreen';
+import { useLanguage } from '../i18n';
 import appConfig from '../../app.json';
 
 type StorageSummary = { keyCount: number; totalBytes: number };
@@ -35,6 +36,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export function AdminPanel({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { t } = useLanguage();
   const [storage, setStorage] = useState<StorageSummary | null>(null);
   const { activate: activateSystemError } = useSystemError();
 
@@ -51,40 +53,53 @@ export function AdminPanel({ visible, onClose }: { visible: boolean; onClose: ()
       <View style={styles.backdrop}>
         <View style={styles.panel}>
           <View style={styles.header}>
-            <Text style={styles.title}>管理者画面</Text>
+            <Text style={styles.title}>{t('admin.title')}</Text>
             <Pressable onPress={onClose} style={styles.closeButton} hitSlop={10}>
               <Text style={styles.closeLabel}>✕</Text>
             </Pressable>
           </View>
 
           <ScrollView contentContainerStyle={styles.body}>
-            <Text style={styles.sectionLabel}>アプリ情報</Text>
-            <InfoRow label="バージョン" value={appConfig.expo.version} />
-            <InfoRow label="ビルド番号" value={appConfig.expo.ios.buildNumber} />
+            <Text style={styles.sectionLabel}>{t('admin.appInfoSection')}</Text>
+            <InfoRow label={t('admin.version')} value={appConfig.expo.version} />
+            <InfoRow label={t('admin.buildNumber')} value={appConfig.expo.ios.buildNumber} />
 
-            <Text style={styles.sectionLabel}>expo-updates</Text>
-            <InfoRow label="有効" value={Updates.isEnabled ? 'はい' : 'いいえ'} />
-            <InfoRow label="ランタイムバージョン" value={Updates.runtimeVersion ?? '不明'} />
-            <InfoRow label="チャンネル" value={Updates.channel ?? '未設定'} />
-            <InfoRow label="起動元" value={Updates.isEmbeddedLaunch ? 'ネイティブ内蔵' : 'OTA更新'} />
+            <Text style={styles.sectionLabel}>{t('admin.updatesSection')}</Text>
+            <InfoRow label={t('admin.enabled')} value={Updates.isEnabled ? t('common.yes') : t('common.no')} />
+            <InfoRow
+              label={t('admin.runtimeVersion')}
+              value={Updates.runtimeVersion ?? t('common.unknown')}
+            />
+            <InfoRow label={t('admin.channel')} value={Updates.channel ?? t('common.notSet')} />
+            <InfoRow
+              label={t('admin.launchSource')}
+              value={Updates.isEmbeddedLaunch ? t('admin.embeddedLaunch') : t('admin.otaLaunch')}
+            />
             {!Updates.isEmbeddedLaunch && (
               <>
-                <InfoRow label="Update ID" value={Updates.updateId ?? '不明'} />
+                <InfoRow label={t('admin.updateId')} value={Updates.updateId ?? t('common.unknown')} />
                 <InfoRow
-                  label="公開日時"
-                  value={Updates.createdAt ? formatTimestamp(Updates.createdAt) : '不明'}
+                  label={t('admin.publishedAt')}
+                  value={Updates.createdAt ? formatTimestamp(Updates.createdAt) : t('common.unknown')}
                 />
               </>
             )}
 
-            <Text style={styles.sectionLabel}>ストレージ</Text>
-            <InfoRow label="保存キー数" value={storage ? `${storage.keyCount}件` : '読込中…'} />
+            <Text style={styles.sectionLabel}>{t('admin.storageSection')}</Text>
             <InfoRow
-              label="使用量（概算）"
-              value={storage ? `約${(storage.totalBytes / 1024).toFixed(1)} KB` : '読込中…'}
+              label={t('admin.storedKeys')}
+              value={storage ? t('admin.storedKeysUnit', { count: storage.keyCount }) : t('common.loading')}
+            />
+            <InfoRow
+              label={t('admin.storageUsage')}
+              value={
+                storage
+                  ? t('admin.storageUsageValue', { kb: (storage.totalBytes / 1024).toFixed(1) })
+                  : t('common.loading')
+              }
             />
 
-            <Text style={styles.sectionLabel}>いたずら</Text>
+            <Text style={styles.sectionLabel}>{t('admin.mischiefSection')}</Text>
             <Pressable
               style={styles.dangerButton}
               onPress={() => {
@@ -92,11 +107,9 @@ export function AdminPanel({ visible, onClose }: { visible: boolean; onClose: ()
                 onClose();
               }}
             >
-              <Text style={styles.dangerButtonLabel}>エラー画面を表示</Text>
+              <Text style={styles.dangerButtonLabel}>{t('admin.showErrorScreen')}</Text>
             </Pressable>
-            <Text style={styles.dangerHint}>
-              解除するにはこの端末で管理者画面と同じ隠しコマンド（↑↑↓↓→←→←）を入力してください。
-            </Text>
+            <Text style={styles.dangerHint}>{t('admin.dismissHint')}</Text>
           </ScrollView>
         </View>
       </View>

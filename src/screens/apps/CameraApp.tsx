@@ -4,8 +4,10 @@ import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { Directory, File, Paths } from 'expo-file-system';
 import { colors } from '../../theme/colors';
 import { addGalleryPhoto } from '../../lib/galleryStore';
+import { useLanguage } from '../../i18n';
 
 export function CameraApp() {
+  const { t } = useLanguage();
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>('back');
   const [flashVisible, setFlashVisible] = useState(false);
@@ -14,7 +16,7 @@ export function CameraApp() {
   if (!permission) {
     return (
       <View style={styles.center}>
-        <Text style={styles.message}>権限を確認しています…</Text>
+        <Text style={styles.message}>{t('camera.checkingPermission')}</Text>
       </View>
     );
   }
@@ -22,9 +24,9 @@ export function CameraApp() {
   if (!permission.granted) {
     return (
       <View style={styles.center}>
-        <Text style={styles.message}>写真を撮るにはカメラへのアクセスを許可してください</Text>
+        <Text style={styles.message}>{t('camera.permissionMessage')}</Text>
         <Pressable style={styles.permButton} onPress={requestPermission}>
-          <Text style={styles.permButtonLabel}>許可する</Text>
+          <Text style={styles.permButtonLabel}>{t('camera.permissionAllow')}</Text>
         </Pressable>
       </View>
     );
@@ -55,7 +57,7 @@ export function CameraApp() {
           style={styles.flipButton}
           onPress={() => setFacing((f) => (f === 'back' ? 'front' : 'back'))}
         >
-          <Text style={styles.flipLabel}>反転</Text>
+          <Text style={styles.flipLabel}>{t('camera.flip')}</Text>
         </Pressable>
         <Pressable style={styles.shutter} onPress={takePhoto} />
         <View style={styles.flipButton} />

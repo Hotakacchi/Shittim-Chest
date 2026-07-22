@@ -5,6 +5,7 @@ import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getOrCreateTodaysDutyStudent } from '../../lib/dutyStudent';
 import { getOwnedCharacters, setOwnedCharacters, toggleOwnedCharacter } from '../../lib/ownedCharacters';
 import { StudentDetailModal } from '../../components/StudentDetailModal';
+import { useLanguage } from '../../i18n';
 import characters from '../../data/characters.json';
 
 const NUM_COLUMNS = 6;
@@ -31,6 +32,7 @@ function buildListData(): ListEntry[] {
 const LIST_DATA = buildListData();
 
 export function StudentListApp() {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState<Character | null>(null);
   const [owned, setOwned] = useState<string[]>([]);
   const [editMode, setEditMode] = useState(false);
@@ -63,18 +65,16 @@ export function StudentListApp() {
     <>
       <View style={styles.toolbar}>
         <Text style={styles.hint}>
-          {editMode
-            ? 'タップして持っているキャラを選択'
-            : '★編集で持っているキャラを選ぶと、本日の当番はその中から選ばれます'}
+          {editMode ? t('students.hintEdit') : t('students.hintNormal')}
         </Text>
         <View style={styles.toolbarButtons}>
           {editMode && (
             <>
               <Pressable style={styles.toolbarButton} onPress={handleSelectAll}>
-                <Text style={styles.toolbarButtonLabel}>すべて選択</Text>
+                <Text style={styles.toolbarButtonLabel}>{t('common.selectAll')}</Text>
               </Pressable>
               <Pressable style={styles.toolbarButton} onPress={handleDeselectAll}>
-                <Text style={styles.toolbarButtonLabel}>すべて解除</Text>
+                <Text style={styles.toolbarButtonLabel}>{t('common.deselectAll')}</Text>
               </Pressable>
             </>
           )}
@@ -83,7 +83,7 @@ export function StudentListApp() {
             onPress={() => setEditMode((v) => !v)}
           >
             <Text style={[styles.toolbarButtonLabel, editMode && styles.toolbarButtonLabelActive]}>
-              {editMode ? '完了' : '編集'}
+              {editMode ? t('common.done') : t('common.edit')}
             </Text>
           </Pressable>
         </View>
@@ -111,7 +111,7 @@ export function StudentListApp() {
             >
               {isDuty && (
                 <View style={styles.dutyBadge}>
-                  <Text style={styles.dutyBadgeLabel}>当番</Text>
+                  <Text style={styles.dutyBadgeLabel}>{t('students.dutyBadge')}</Text>
                 </View>
               )}
               <View style={styles.ownedBadge}>

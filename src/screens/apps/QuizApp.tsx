@@ -3,6 +3,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { colors } from '../../theme/colors';
 import { QUIZ_IMAGES } from '../../data/quiz/quizImageMap';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
+import { useLanguage } from '../../i18n';
 import {
   loadQuizStats,
   recordAnswer,
@@ -30,8 +31,6 @@ type Question = ChoiceQuestion | TextQuestion | DateQuestion;
 
 type Category = {
   key: string;
-  label: string;
-  description: string;
   data: Question[];
   imageAspect: 'square' | 'wide';
 };
@@ -41,13 +40,13 @@ function withMode<T extends { prompt: string }>(mode: Question['mode'], items: T
 }
 
 const CATEGORIES: Category[] = [
-  { key: 'actor', label: '声優クイズ', description: '顔グラからCV担当声優を当てる', data: withMode('choice', actorData) as Question[], imageAspect: 'square' },
-  { key: 'halo', label: 'ヘイロークイズ', description: 'ヘイローの形からキャラを当てる', data: withMode('choice', haloData) as Question[], imageAspect: 'square' },
-  { key: 'memory', label: 'メモロビクイズ', description: 'メモリアルロビー画像からキャラを当てる', data: withMode('choice', memoryData) as Question[], imageAspect: 'wide' },
-  { key: 'miyozi', label: '苗字クイズ', description: 'キャラクターの名字を入力して当てる', data: withMode('text', miyoziData) as Question[], imageAspect: 'square' },
-  { key: 'birthday', label: '誕生日クイズ', description: '月日を選んでキャラクターの誕生日を当てる', data: withMode('date', birthdayData) as Question[], imageAspect: 'square' },
-  { key: 'pu', label: 'セリフクイズ', description: 'ボイスの決め台詞から誰か当てる', data: withMode('choice', puData) as Question[], imageAspect: 'square' },
-  { key: 'status', label: 'ステータスクイズ', description: 'ステータス画面の一言から誰か当てる', data: withMode('choice', statusData) as Question[], imageAspect: 'square' },
+  { key: 'actor', data: withMode('choice', actorData) as Question[], imageAspect: 'square' },
+  { key: 'halo', data: withMode('choice', haloData) as Question[], imageAspect: 'square' },
+  { key: 'memory', data: withMode('choice', memoryData) as Question[], imageAspect: 'wide' },
+  { key: 'miyozi', data: withMode('text', miyoziData) as Question[], imageAspect: 'square' },
+  { key: 'birthday', data: withMode('date', birthdayData) as Question[], imageAspect: 'square' },
+  { key: 'pu', data: withMode('choice', puData) as Question[], imageAspect: 'square' },
+  { key: 'status', data: withMode('choice', statusData) as Question[], imageAspect: 'square' },
 ];
 
 const ROUND_SIZE_OPTIONS = [5, 10, 20];
@@ -87,6 +86,7 @@ function CategoryPicker({
   fullRoundStats: QuizStats;
   onSelect: (category: Category) => void;
 }) {
+  const { t } = useLanguage();
   return (
     <ScrollView contentContainerStyle={styles.categoryList}>
       {CATEGORIES.map((category) => {
@@ -95,17 +95,19 @@ function CategoryPicker({
         const fullRound = fullRoundStats[category.key];
         return (
           <Pressable key={category.key} style={styles.categoryCard} onPress={() => onSelect(category)}>
-            <Text style={styles.categoryLabel}>{category.label}</Text>
-            <Text style={styles.categoryDescription}>{category.description}</Text>
-            <Text style={styles.categoryCount}>全{category.data.length}問</Text>
+            <Text style={styles.categoryLabel}>{t(`quiz.categories.${category.key}.label`)}</Text>
+            <Text style={styles.categoryDescription}>
+              {t(`quiz.categories.${category.key}.description`)}
+            </Text>
+            <Text style={styles.categoryCount}>{t('quiz.questionCount', { count: category.data.length })}</Text>
             {accuracy !== null && (
               <Text style={styles.categoryStats}>
-                累計正解率: {accuracy}%（{stat.correct}/{stat.total}問）
+                {t('quiz.cumulativeAccuracy', { percent: accuracy, correct: stat.correct, total: stat.total })}
               </Text>
             )}
             {fullRound && (
               <Text style={styles.fullRoundStats}>
-                全問ベスト: {fullRound.correct}/{fullRound.total}問
+                {t('quiz.fullRoundBest', { correct: fullRound.correct, total: fullRound.total })}
               </Text>
             )}
           </Pressable>
@@ -124,22 +126,25 @@ function RoundSizeSelector({
   onSelect: (roundSize: number) => void;
   onBack: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <View style={styles.sizeContainer}>
-      <Text style={styles.categoryLabel}>{category.label}</Text>
-      <Text style={styles.categoryDescription}>出題数を選んでください</Text>
+      <Text style={styles.categoryLabel}>{t(`quiz.categories.${category.key}.label`)}</Text>
+      <Text style={styles.categoryDescription}>{t('quiz.chooseRoundSize')}</Text>
       <View style={styles.sizeOptions}>
         {ROUND_SIZE_OPTIONS.filter((size) => size < category.data.length).map((size) => (
           <Pressable key={size} style={styles.sizeButton} onPress={() => onSelect(size)}>
-            <Text style={styles.sizeButtonLabel}>{size}問</Text>
+            <Text style={styles.sizeButtonLabel}>{t('quiz.roundSizeOption', { count: size })}</Text>
           </Pressable>
         ))}
         <Pressable style={styles.sizeButton} onPress={() => onSelect(category.data.length)}>
-          <Text style={styles.sizeButtonLabel}>全{category.data.length}問</Text>
+          <Text style={styles.sizeButtonLabel}>
+            {t('quiz.roundSizeAll', { count: category.data.length })}
+          </Text>
         </Pressable>
       </View>
       <Pressable style={styles.secondaryButton} onPress={onBack}>
-        <Text style={styles.secondaryButtonLabel}>カテゴリ選択に戻る</Text>
+        <Text style={styles.secondaryButtonLabel}>{t('quiz.backToCategories')}</Text>
       </Pressable>
     </View>
   );
@@ -190,6 +195,7 @@ function TextAnswer({
   submitted: string | null;
   onSubmit: (value: string) => void;
 }) {
+  const { t } = useLanguage();
   const [draft, setDraft] = useState('');
   const isCorrect = submitted !== null && question.answers.includes(submitted.trim());
 
@@ -199,7 +205,7 @@ function TextAnswer({
         value={draft}
         onChangeText={setDraft}
         editable={submitted === null}
-        placeholder="名字を入力…"
+        placeholder={t('quiz.surnamePlaceholder')}
         placeholderTextColor={colors.inkDim}
         style={[styles.textInput, submitted !== null && (isCorrect ? styles.choiceCorrect : styles.choiceWrong)]}
         onSubmitEditing={() => draft.trim() && onSubmit(draft)}
@@ -207,11 +213,11 @@ function TextAnswer({
       />
       {submitted === null ? (
         <Pressable style={styles.primaryButton} onPress={() => draft.trim() && onSubmit(draft)}>
-          <Text style={styles.primaryButtonLabel}>回答する</Text>
+          <Text style={styles.primaryButtonLabel}>{t('quiz.submitAnswer')}</Text>
         </Pressable>
       ) : (
         <Text style={styles.revealText}>
-          {isCorrect ? '正解！' : `不正解。正解は「${question.answers[0]}」`}
+          {isCorrect ? t('quiz.correct') : t('quiz.incorrectText', { answer: question.answers[0] })}
         </Text>
       )}
     </View>
@@ -227,13 +233,14 @@ function DateAnswer({
   submitted: { month: number; day: number } | null;
   onSubmit: (value: { month: number; day: number }) => void;
 }) {
+  const { t } = useLanguage();
   const [month, setMonth] = useState<number | null>(null);
   const [day, setDay] = useState<number | null>(null);
   const isCorrect = submitted !== null && submitted.month === question.month && submitted.day === question.day;
 
   return (
     <View style={styles.dateAnswerBlock}>
-      <Text style={styles.pickerLabel}>月</Text>
+      <Text style={styles.pickerLabel}>{t('quiz.month')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pickerRow}>
         {MONTHS.map((m) => (
           <Pressable
@@ -247,7 +254,7 @@ function DateAnswer({
         ))}
       </ScrollView>
 
-      <Text style={styles.pickerLabel}>日</Text>
+      <Text style={styles.pickerLabel}>{t('quiz.day')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pickerRow}>
         {DAYS.map((d) => (
           <Pressable
@@ -267,11 +274,11 @@ function DateAnswer({
           onPress={() => month && day && onSubmit({ month, day })}
           disabled={!month || !day}
         >
-          <Text style={styles.primaryButtonLabel}>回答する</Text>
+          <Text style={styles.primaryButtonLabel}>{t('quiz.submitAnswer')}</Text>
         </Pressable>
       ) : (
         <Text style={styles.revealText}>
-          {isCorrect ? '正解！' : `不正解。正解は${question.month}月${question.day}日`}
+          {isCorrect ? t('quiz.correct') : t('quiz.incorrectDate', { month: question.month, day: question.day })}
         </Text>
       )}
     </View>
@@ -287,6 +294,7 @@ function QuizRound({
   roundSize: number;
   onExit: () => void;
 }) {
+  const { t } = useLanguage();
   const [round, setRound] = useState(() => buildRound(category, roundSize));
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -342,9 +350,9 @@ function QuizRound({
   if (finished) {
     return (
       <View style={styles.resultContainer}>
-        <Text style={styles.resultTitle}>結果発表</Text>
+        <Text style={styles.resultTitle}>{t('quiz.resultTitle')}</Text>
         <Text style={styles.resultScore}>
-          {score} / {round.length} 問正解
+          {t('quiz.resultScore', { score, total: round.length })}
         </Text>
         <Pressable
           style={styles.primaryButton}
@@ -357,10 +365,10 @@ function QuizRound({
             setDateSubmitted(null);
           }}
         >
-          <Text style={styles.primaryButtonLabel}>もう一度</Text>
+          <Text style={styles.primaryButtonLabel}>{t('quiz.retry')}</Text>
         </Pressable>
         <Pressable style={styles.secondaryButton} onPress={onExit}>
-          <Text style={styles.secondaryButtonLabel}>カテゴリ選択に戻る</Text>
+          <Text style={styles.secondaryButtonLabel}>{t('quiz.backToCategories')}</Text>
         </Pressable>
       </View>
     );
@@ -369,7 +377,7 @@ function QuizRound({
   return (
     <ScrollView contentContainerStyle={styles.quizContainer}>
       <Text style={styles.progress}>
-        {index + 1} / {round.length}　正解数: {score}
+        {t('quiz.progress', { current: index + 1, total: round.length, score })}
       </Text>
 
       {'image' in current.question && current.question.image && (
@@ -400,7 +408,7 @@ function QuizRound({
       {answered && (
         <Pressable style={styles.primaryButton} onPress={next}>
           <Text style={styles.primaryButtonLabel}>
-            {index + 1 === round.length ? '結果を見る' : '次の問題へ'}
+            {index + 1 === round.length ? t('quiz.seeResults') : t('quiz.nextQuestion')}
           </Text>
         </Pressable>
       )}

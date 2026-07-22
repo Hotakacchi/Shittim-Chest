@@ -3,8 +3,9 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-na
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../theme/colors';
 import { STORAGE_KEYS } from '../../lib/storageKeys';
-import { WEEKDAYS_JA, getMonthMatrix, toDateKey } from '../../lib/dateUtils';
+import { getMonthMatrix, toDateKey } from '../../lib/dateUtils';
 import { MonthCalendar } from '../../components/MonthCalendar';
+import { useLanguage, WEEKDAYS, Language } from '../../i18n';
 import birthdayData from '../../data/quiz/birthday.json';
 
 type EventItem = {
@@ -28,14 +29,17 @@ for (const entry of birthdayData) {
   (BIRTHDAYS_BY_MONTH_DAY[key] ??= []).push(match[1]);
 }
 
-function formatSelectedDate(date: Date): string {
+function formatSelectedDate(date: Date, language: Language): string {
   const m = date.getMonth() + 1;
   const d = date.getDate();
-  const w = WEEKDAYS_JA[date.getDay()];
+  const w = WEEKDAYS[language][date.getDay()];
+  if (language === 'en') return `${m}/${d} (${w})`;
+  if (language === 'ko') return `${m}월 ${d}일 (${w})`;
   return `${m}月${d}日 (${w})`;
 }
 
 export function ScheduleApp() {
+  const { t, language } = useLanguage();
   const [viewMonth, setViewMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -122,13 +126,15 @@ export function ScheduleApp() {
 
       <View style={styles.divider} />
 
-      <Text style={styles.selectedLabel}>{formatSelectedDate(selectedDate)}の予定</Text>
+      <Text style={styles.selectedLabel}>
+        {t('schedule.selectedLabel', { date: formatSelectedDate(selectedDate, language) })}
+      </Text>
 
       {selectedBirthdays.length > 0 && (
         <View style={styles.birthdayRow}>
           {selectedBirthdays.map((name) => (
             <Text key={name} style={styles.birthdayText}>
-              🎂 {name}の誕生日
+              {t('schedule.birthdayText', { name })}
             </Text>
           ))}
         </View>
@@ -139,13 +145,13 @@ export function ScheduleApp() {
           value={draft}
           onChangeText={setDraft}
           onSubmitEditing={addEvent}
-          placeholder="予定を入力…"
+          placeholder={t('schedule.inputPlaceholder')}
           placeholderTextColor={colors.inkDim}
           style={styles.input}
           returnKeyType="done"
         />
         <Pressable style={styles.addButton} onPress={addEvent}>
-          <Text style={styles.addLabel}>追加</Text>
+          <Text style={styles.addLabel}>{t('common.add')}</Text>
         </Pressable>
       </View>
 
@@ -154,7 +160,7 @@ export function ScheduleApp() {
         keyExtractor={(item) => item.id}
         style={styles.list}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text style={styles.empty}>予定はありません</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t('schedule.empty')}</Text>}
         renderItem={({ item }) => (
           <View style={styles.eventRow}>
             <Text style={styles.eventText}>{item.title}</Text>

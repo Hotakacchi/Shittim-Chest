@@ -5,41 +5,43 @@ import { ClockDisplay } from '../../components/ClockDisplay';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getOrCreateTodaysDutyStudent } from '../../lib/dutyStudent';
 import { getOwnedCharacters } from '../../lib/ownedCharacters';
+import { useLanguage } from '../../i18n';
 import characters from '../../data/characters.json';
 
 // Checked before the regular time-of-day greeting — month/day is enough
 // since these recur every year, no need to track by full date.
-const SPECIAL_DAY_GREETINGS: { month: number; day: number; greeting: string }[] = [
-  { month: 1, day: 1, greeting: '新年明けましておめでとうございます、先生。' },
-  { month: 1, day: 2, greeting: 'お正月はゆっくりできていますか、先生。' },
-  { month: 1, day: 3, greeting: '三が日も終わりですね、先生。' },
-  { month: 2, day: 14, greeting: 'ハッピーバレンタイン、先生。' },
-  { month: 3, day: 14, greeting: 'ハッピーホワイトデー、先生。' },
-  { month: 10, day: 31, greeting: 'ハッピーハロウィン、先生。' },
-  { month: 12, day: 24, greeting: 'メリークリスマス・イブ、先生。' },
-  { month: 12, day: 25, greeting: 'メリークリスマス、先生。' },
-  { month: 12, day: 31, greeting: '今年も一年お疲れ様でした、先生。' },
+const SPECIAL_DAY_GREETINGS: { month: number; day: number; key: string }[] = [
+  { month: 1, day: 1, key: 'clock.greetingNewYear1' },
+  { month: 1, day: 2, key: 'clock.greetingNewYear2' },
+  { month: 1, day: 3, key: 'clock.greetingNewYear3' },
+  { month: 2, day: 14, key: 'clock.greetingValentine' },
+  { month: 3, day: 14, key: 'clock.greetingWhiteDay' },
+  { month: 10, day: 31, key: 'clock.greetingHalloween' },
+  { month: 12, day: 24, key: 'clock.greetingChristmasEve' },
+  { month: 12, day: 25, key: 'clock.greetingChristmas' },
+  { month: 12, day: 31, key: 'clock.greetingNewYearsEve' },
 ];
 
-function getSpecialDayGreeting(date: Date): string | null {
+function getSpecialDayGreetingKey(date: Date): string | null {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const match = SPECIAL_DAY_GREETINGS.find((s) => s.month === month && s.day === day);
-  return match?.greeting ?? null;
+  return match?.key ?? null;
 }
 
-function getTimeGreeting(hour: number): string {
-  if (hour >= 5 && hour < 11) return 'おはようございます、先生。';
-  if (hour >= 11 && hour < 18) return 'お疲れ様です、先生。';
-  if (hour >= 18 && hour < 23) return 'おかえりなさい、先生。';
-  return '夜遅くまでお疲れ様です……先生。';
+function getTimeGreetingKey(hour: number): string {
+  if (hour >= 5 && hour < 11) return 'clock.greetingMorning';
+  if (hour >= 11 && hour < 18) return 'clock.greetingAfternoon';
+  if (hour >= 18 && hour < 23) return 'clock.greetingEvening';
+  return 'clock.greetingLateNight';
 }
 
-function getGreeting(date: Date): string {
-  return getSpecialDayGreeting(date) ?? getTimeGreeting(date.getHours());
+function getGreetingKey(date: Date): string {
+  return getSpecialDayGreetingKey(date) ?? getTimeGreetingKey(date.getHours());
 }
 
 export function ClockApp() {
+  const { t } = useLanguage();
   const [dutyStudent, setDutyStudent] = useState<(typeof characters)[number] | null>(null);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export function ClockApp() {
   return (
     <View style={styles.container}>
       <ClockDisplay />
-      <Text style={styles.greeting}>{getGreeting(new Date())}</Text>
+      <Text style={styles.greeting}>{t(getGreetingKey(new Date()))}</Text>
 
       {dutyStudent && (
         <View style={styles.dutyCard}>
@@ -61,7 +63,7 @@ export function ClockApp() {
             resizeMode="contain"
           />
           <View>
-            <Text style={styles.dutyLabel}>本日の当番</Text>
+            <Text style={styles.dutyLabel}>{t('clock.dutyLabel')}</Text>
             <Text style={styles.dutyName}>{dutyStudent.name}</Text>
           </View>
         </View>

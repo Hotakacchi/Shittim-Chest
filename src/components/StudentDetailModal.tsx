@@ -1,6 +1,7 @@
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme/colors';
 import { CHARACTER_IMAGES } from '../data/characterImageMap';
+import { useLanguage } from '../i18n';
 
 type Student = {
   name: string;
@@ -34,6 +35,7 @@ export function StudentDetailModal({
   student: Student | null;
   onClose: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <Modal visible={student !== null} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -57,13 +59,13 @@ export function StudentDetailModal({
               )}
 
               <View style={styles.detailGrid}>
-                <DetailRow label="学年" value={student.schoolYear} />
-                <DetailRow label="年齢" value={student.age} />
-                <DetailRow label="誕生日" value={student.birthday} />
-                <DetailRow label="身長" value={student.height} />
-                <DetailRow label="声優" value={student.va} />
-                <DetailRow label="絵師" value={student.illustrator} />
-                <DetailRow label="趣味" value={student.hobby} />
+                <DetailRow label={t('studentDetail.schoolYear')} value={student.schoolYear} />
+                <DetailRow label={t('studentDetail.age')} value={student.age} />
+                <DetailRow label={t('studentDetail.birthday')} value={student.birthday} />
+                <DetailRow label={t('studentDetail.height')} value={student.height} />
+                <DetailRow label={t('studentDetail.va')} value={student.va} />
+                <DetailRow label={t('studentDetail.illustrator')} value={student.illustrator} />
+                <DetailRow label={t('studentDetail.hobby')} value={student.hobby} />
               </View>
 
               {student.profile && <Text style={styles.profile}>{student.profile}</Text>}
