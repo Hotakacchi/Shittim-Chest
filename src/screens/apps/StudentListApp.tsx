@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { BackHandler, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { CHARACTER_IMAGES } from '../../data/characterImageMap';
 import { getOrCreateTodaysDutyStudent } from '../../lib/dutyStudent';
@@ -47,6 +47,15 @@ export function StudentListApp() {
       getOrCreateTodaysDutyStudent(initialOwned).then(setDutyStudent);
     });
   }, []);
+
+  useEffect(() => {
+    if (!editMode) return;
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      setEditMode(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [editMode]);
 
   function handleToggleOwned(image: string) {
     toggleOwnedCharacter(image).then(setOwned);

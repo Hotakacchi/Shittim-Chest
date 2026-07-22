@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useIsTablet } from './src/hooks/useIsTablet';
@@ -41,11 +42,13 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <SystemErrorProvider>
-        <AppContent />
-        <SystemErrorScreen />
-      </SystemErrorProvider>
-    </LanguageProvider>
+    <SafeAreaProvider>
+      <LanguageProvider>
+        <SystemErrorProvider>
+          <AppContent />
+          <SystemErrorScreen />
+        </SystemErrorProvider>
+      </LanguageProvider>
+    </SafeAreaProvider>
   );
 }

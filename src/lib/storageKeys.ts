@@ -12,4 +12,5 @@ export const STORAGE_KEYS = {
   dutyStudent: 'shittim.students.duty.v1',
   systemErrorActive: 'shittim.system.errorActive.v1',
   language: 'shittim.settings.language',
+  customQuizPacks: 'shittim.quiz.customPacks.v1',
 } as const;

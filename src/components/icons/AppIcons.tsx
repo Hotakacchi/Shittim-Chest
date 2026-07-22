@@ -87,6 +87,17 @@ export function StudentListIcon({ size = 28, color = colors.ink }: IconProps) {
   );
 }
 
+export function BrowserIcon({ size = 28, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx={12} cy={12} r={9} stroke={color} strokeWidth={1.8} />
+      <Path d="M3 12h18" stroke={color} strokeWidth={1.8} />
+      <Path d="M12 3c2.8 2.4 2.8 15.6 0 18" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+      <Path d="M12 3c-2.8 2.4-2.8 15.6 0 18" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
 const GEAR_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 export function GearIcon({ size = 28, color = colors.ink }: IconProps) {
