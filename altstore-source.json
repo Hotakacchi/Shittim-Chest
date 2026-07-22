@@ -18,6 +18,15 @@
       "category": "utilities",
       "versions": [
         {
+          "version": "1.0.11",
+          "buildVersion": "12",
+          "date": "2026-07-22",
+          "localizedDescription": "多言語対応（日本語/英語/韓国語/簡体字中国語）を追加。QUIZにカスタム問題セットのURL取り込み機能、新しいBROWSERアプリ（複数タブ対応のサンドボックスWebView）を追加しました。",
+          "downloadURL": "https://github.com/Hotakacchi/Shittim-Chest/releases/download/v1.0.11/ShittimChest-unsigned.ipa",
+          "size": 18265949,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.0.10",
           "buildVersion": "11",
           "date": "2026-07-12",
