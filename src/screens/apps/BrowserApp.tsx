@@ -176,37 +176,42 @@ export function BrowserApp() {
       </View>
 
       <View style={styles.webviewArea}>
-        {tabs.map((tab) => (
-          <View
-            key={tab.id}
-            style={[StyleSheet.absoluteFill, { display: tab.id === activeId ? 'flex' : 'none' }]}
-          >
-            {tab.url ? (
-              <WebView
-                ref={(ref) => {
-                  webviewRefs.current[tab.id] = ref;
-                }}
-                source={{ uri: tab.url }}
-                originWhitelist={['https://*', 'http://*']}
-                onShouldStartLoadWithRequest={(request) => isAllowedRequestUrl(request.url)}
-                onNavigationStateChange={(navState) => {
-                  updateTab(tab.id, {
-                    canGoBack: navState.canGoBack,
-                    canGoForward: navState.canGoForward,
-                    title: navState.title,
-                    input: navState.url,
-                  });
-                }}
-                setSupportMultipleWindows={false}
-                javaScriptCanOpenWindowsAutomatically={false}
-              />
-            ) : (
-              <View style={styles.blankState}>
-                <Text style={styles.blankStateText}>{t('browser.blankState')}</Text>
-              </View>
-            )}
-          </View>
-        ))}
+        {(() => {
+          const tab = activeTab;
+          return (
+            <View key={tab.id} style={StyleSheet.absoluteFill}>
+              {tab.url ? (
+                <WebView
+                  // A fresh WebView per tab id — switching tabs unmounts the
+                  // previous one instead of keeping every tab's WebView alive
+                  // at once, since each live instance is a real memory/GPU
+                  // cost on Android. The trade-off is losing scroll position
+                  // when switching away and back, which is acceptable here.
+                  ref={(ref) => {
+                    webviewRefs.current[tab.id] = ref;
+                  }}
+                  source={{ uri: tab.url }}
+                  originWhitelist={['https://*', 'http://*']}
+                  onShouldStartLoadWithRequest={(request) => isAllowedRequestUrl(request.url)}
+                  onNavigationStateChange={(navState) => {
+                    updateTab(tab.id, {
+                      canGoBack: navState.canGoBack,
+                      canGoForward: navState.canGoForward,
+                      title: navState.title,
+                      input: navState.url,
+                    });
+                  }}
+                  setSupportMultipleWindows={false}
+                  javaScriptCanOpenWindowsAutomatically={false}
+                />
+              ) : (
+                <View style={styles.blankState}>
+                  <Text style={styles.blankStateText}>{t('browser.blankState')}</Text>
+                </View>
+              )}
+            </View>
+          );
+        })()}
       </View>
     </View>
   );

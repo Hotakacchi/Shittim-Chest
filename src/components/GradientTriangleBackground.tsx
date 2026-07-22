@@ -89,7 +89,7 @@ const GROUPS = [
   { seed: 61, cellSize: 320, perCell: 6, sizeRange: [26, 46] as [number, number], tiers: [0.06, 0.1, 0.15], dirX: 0.5, dirY: -1, duration: 12500 },
 ];
 
-export function GradientTriangleBackground() {
+export function GradientTriangleBackground({ paused = false }: { paused?: boolean }) {
   const anims = useRef(GROUPS.map(() => new Animated.Value(0))).current;
   const twinkle = useRef(new Animated.Value(0)).current;
   const stars = useMemo(() => makeStars(42), []);
@@ -98,7 +98,13 @@ export function GradientTriangleBackground() {
     [],
   );
 
+  // This layer sits behind every screen, including whenever an app window
+  // fully covers it — Android in particular pays a real, continuous
+  // GPU/compositor cost for animating a scattered SVG this large, so the
+  // loops are stopped outright (not just visually hidden) whenever nothing
+  // is actually visible.
   useEffect(() => {
+    if (paused) return;
     const loops = GROUPS.map((g, i) =>
       Animated.loop(
         Animated.timing(anims[i], {
@@ -122,7 +128,7 @@ export function GradientTriangleBackground() {
       twinkleLoop.stop();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [paused]);
 
   const starOpacity = twinkle.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1] });
 

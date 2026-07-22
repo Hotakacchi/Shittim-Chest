@@ -41,7 +41,7 @@ export function OSHomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <GradientTriangleBackground />
+      <GradientTriangleBackground paused={!!AppScreen} />
 
       <TapEffectsLayer>
         <View
